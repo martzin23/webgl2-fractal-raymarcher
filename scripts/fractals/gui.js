@@ -244,7 +244,7 @@ export default class GUIManager {
                         gpu.uniforms.custom_e = 1.0;
                         break;
                     case 1: 
-                        code = await (await fetch("../scripts/fractals/shader/mandelbox.glsl")).text();
+                        code = await (await fetch("./scripts/fractals/shader/mandelbox.glsl")).text();
                         gpu.uniforms.custom_a = -2.0;
                         gpu.uniforms.custom_b = 1.0;
                         gpu.uniforms.custom_c = 0.5;
@@ -252,7 +252,7 @@ export default class GUIManager {
                         gpu.uniforms.custom_e = 2.0;
                         break;
                     case 2:
-                        code = await (await fetch("../scripts/fractals/shader/mandelbulb.glsl")).text();
+                        code = await (await fetch("./scripts/fractals/shader/mandelbulb.glsl")).text();
                         gpu.uniforms.custom_a = 5.0;
                         gpu.uniforms.custom_b = 1.0;
                         gpu.uniforms.custom_c = 1.0;
@@ -260,7 +260,7 @@ export default class GUIManager {
                         gpu.uniforms.custom_e = 1.0;
                         break;
                     case 3: 
-                        code = await (await fetch("../scripts/fractals/shader/kochcurve.glsl")).text();
+                        code = await (await fetch("./scripts/fractals/shader/kochcurve.glsl")).text();
                         gpu.uniforms.custom_a = 1.0;
                         gpu.uniforms.custom_b = 1.0;
                         gpu.uniforms.custom_c = 1.0;
@@ -268,7 +268,7 @@ export default class GUIManager {
                         gpu.uniforms.custom_e = 1.0;
                         break;
                     case 4: 
-                        code = await (await fetch("../scripts/fractals/shader/juliabulb.glsl")).text();
+                        code = await (await fetch("./scripts/fractals/shader/juliabulb.glsl")).text();
                         gpu.uniforms.custom_a = 3.0;
                         gpu.uniforms.custom_b = 1.0;
                         gpu.uniforms.custom_c = 1.0;
