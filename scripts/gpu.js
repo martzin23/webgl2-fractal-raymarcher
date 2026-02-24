@@ -1,13 +1,13 @@
-import * as Matrix from "../utility/matrix.js";
-import * as Vector from "../utility/vector.js";
-import * as WebGL from "../utility/webgl.js";
-import * as Loader from "../utility/loader.js";
+import * as Matrix from "./utility/matrix.js";
+import * as Vector from "./utility/vector.js";
+import * as WebGL from "./utility/webgl.js";
+import * as Loader from "./utility/loader.js";
 
 export default class WebGLManager {
     static async initialize(canvas) {
-        const compute_shader_code = await (await fetch('./scripts/fractals/shader/compute.glsl')).text();
-        const render_shader_code = await (await fetch('./scripts/fractals/shader/render.glsl')).text();
-        const sdf_code = await (await fetch('./scripts/fractals/shader/sphere.glsl')).text();
+        const compute_shader_code = await (await fetch('./scripts/shader/compute.glsl')).text();
+        const render_shader_code = await (await fetch('./scripts/shader/render.glsl')).text();
+        const sdf_code = await (await fetch('./scripts/shader/sphere.glsl')).text();
         return new WebGLManager(canvas, compute_shader_code, render_shader_code, sdf_code);
     }
 
