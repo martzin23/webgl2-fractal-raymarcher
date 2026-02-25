@@ -123,6 +123,7 @@ section {
 
 :root:fullscreen header {
     padding-top: var(--spacing);
+    height: fit-content;
 }
 
 :root:fullscreen header>nav {
