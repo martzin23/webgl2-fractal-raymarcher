@@ -1,6 +1,6 @@
 import * as Vector from './vector.js';
 import * as Matrix from './matrix.js';
-import * as TouchListener from './touch.js';
+import * as TouchListener from './pointer.js';
 
 export default class Camera {
     #key_states;

@@ -1,5 +1,4 @@
 
-// TODO rename file
 export async function loadImage(url) {
     const promise = new Promise((resolve, reject) => {
         const image = new Image();

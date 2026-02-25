@@ -1,4 +1,4 @@
-import * as TouchListener from './touch.js';
+import * as TouchListener from './pointer.js';
 
 export function createButton(parent, set = () => {}, name = "Button") {
     const element_base = document.createElement("div");

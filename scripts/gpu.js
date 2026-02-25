@@ -1,7 +1,7 @@
 import * as Matrix from "./utility/matrix.js";
 import * as Vector from "./utility/vector.js";
 import * as WebGL from "./utility/webgl.js";
-import * as Loader from "./utility/loader.js";
+import * as Image from "./utility/image.js";
 
 export default class WebGLManager {
     static async initialize(canvas) {
@@ -258,7 +258,7 @@ export default class WebGLManager {
         const image = WebGL.textureToImage(this.gl, color_buffer, render_width, render_height);
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
 
-        Loader.saveImage(file_name, image);
+        Image.saveImage(file_name, image);
     }
 }
 
