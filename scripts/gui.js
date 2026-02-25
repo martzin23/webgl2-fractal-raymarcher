@@ -1,5 +1,5 @@
+import Vector3D from './utility/vector3d.js';
 import * as Widgets from './utility/widgets.js';
-import * as Vector from './utility/vector.js';
 
 export default class GUIManager {
     constructor(canvas, gpu, camera, storage) {
@@ -307,7 +307,7 @@ export default class GUIManager {
         Widgets.createDrag(document.getElementById("group-camera-firstperson"), (value) => {camera.position.y = value;}, () => camera.position.y, "Y Position", -Infinity, Infinity, 0.1).addTooltip("Position of the camera along the Y axis");
         Widgets.createDrag(document.getElementById("group-camera-firstperson"), (value) => {camera.position.z = value;}, () => camera.position.z, "Z", -Infinity, Infinity, 0.1).addTooltip("Position of the camera along the Z axis");
         
-        Widgets.createDrag(document.getElementById("group-camera-orbit"), (value) => {camera.position = Vector.add(Vector.mul(Matrix.rot2dir(camera.rotation.x, -camera.rotation.y), -value), camera.orbit_anchor)}, () => Vector.len(Vector.add(camera.position, camera.orbit_anchor)), "Distance", 0, Infinity, 0.1).addTooltip("Distance of the camera from the orbit anchor point");
+        Widgets.createDrag(document.getElementById("group-camera-orbit"), (value) => {camera.position = Vector3D.add(Vector3D.mul(Matrix.rot2dir(camera.rotation.x, -camera.rotation.y), -value), camera.orbit_anchor)}, () => (Vector3D.add(camera.position, camera.orbit_anchor)).len(), "Distance", 0, Infinity, 0.1).addTooltip("Distance of the camera from the orbit anchor point");
         Widgets.createDrag(document.getElementById("group-camera-orbit"), (value) => {camera.rotation.x = value; camera.updateOrbit();}, () => camera.rotation.x, "Horizontal angle", -Infinity, Infinity, 0.1).addTooltip("Horizontal angle around the camera orbit anchor");
         Widgets.createDrag(document.getElementById("group-camera-orbit"), (value) => {camera.rotation.y = value; camera.updateOrbit();}, () => camera.rotation.y, "Vertical angle", -90, 90, 0.1).addTooltip("Vertical angle around the camera orbit anchor");
         Widgets.createSlider(document.getElementById("group-camera-orbit"), (value) => {camera.speed = value;}, () => camera.speed, "Speed", 0, 10, true).addTooltip("Translation speed of the camera");

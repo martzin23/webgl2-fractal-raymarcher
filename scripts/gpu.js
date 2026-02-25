@@ -1,7 +1,9 @@
-import * as Matrix from "./utility/matrix.js";
-import * as Vector from "./utility/vector.js";
+import Matrix from "./utility/matrix.js";
+import Vector2D from "./utility/vector2d.js"
+import Vector3D from "./utility/vector3d.js"
 import * as WebGL from "./utility/webgl.js";
 import * as Image from "./utility/image.js";
+import Vector from "./utility/vector.js";
 
 export default class WebGLManager {
     static async initialize(canvas) {
@@ -28,8 +30,8 @@ export default class WebGLManager {
         this.compute_program;
         this.render_program;
         
-        this.sun_rotation = Vector.vec(45, 45);
-        this.base_render_size = {x: 2560, y: 1440};
+        this.sun_rotation = new Vector2D(45.0, 45.0);
+        this.base_render_size = new Vector2D(2560, 1440);
         this.gl = this.canvas.getContext("webgl2");
         if (!this.gl)
             throw new ReferenceError("This device or browser does not support WebGL2.");
@@ -41,19 +43,19 @@ export default class WebGLManager {
         this.canvas.addEventListener("resize", () => {this.synchronize(); this.refresh();});
 
         this.uniforms = {
-            canvas_size: Vector.vec(this.base_render_size.x, this.base_render_size.y),
-            buffer_size: Vector.vec(this.base_render_size.x, this.base_render_size.y),
+            canvas_size: new Vector2D(this.base_render_size.x, this.base_render_size.y),
+            buffer_size: new Vector2D(this.base_render_size.x, this.base_render_size.y),
 
             render_scale: 1.0,
             temporal_counter: 1.0,
             focus_distance: 1.0,
             focus_strength: 0.0,
 
-            camera_rotation: Matrix.mat(1.0),
-            camera_position: Vector.vec(0.0, -3.0, 0.0),
+            camera_rotation: new Matrix(),
+            camera_position: new Vector3D(0.0, -3.0, 0.0),
             fov: 1.0,
 
-            sun_direction: Vector.vec(1.0),
+            sun_direction: new Vector3D(1.0),
             shader_mode: 1,
 
             max_bounces: 3,
@@ -202,7 +204,7 @@ export default class WebGLManager {
     synchronize() {
         const width = Math.min(this.canvas.clientWidth, this.base_render_size.x);
         const height = Math.min(this.canvas.clientHeight, this.base_render_size.y);
-        this.uniforms.canvas_size = Vector.vec(width, height);
+        this.uniforms.canvas_size = new Vector2D(width, height);
         this.canvas.width = width;
         this.canvas.height = height;
     }
@@ -265,12 +267,13 @@ export default class WebGLManager {
 function packUniforms(data) {
     let array = [];
     for (const el in data) {
-        if (Vector.test(data[el]))
-            array.push(Vector.array(data[el]));
-        else if (Matrix.test(data[el]))
-            array.push(Matrix.array(data[el]));
+        const value = data[el]
+        if (value instanceof Vector)
+            array.push(value.array());
+        else if (value instanceof Matrix)
+            array.push(value.array());
         else
-            array.push(data[el]);
+            array.push(value);
     }
     return array.flat();
 }

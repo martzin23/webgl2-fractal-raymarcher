@@ -2,9 +2,10 @@ import WebGLManager from './gpu.js'
 import GUIManager from './gui.js';
 import FPSCounter from './utility/fps.js';
 import Camera from './utility/camera.js';
-import * as Matrix from './utility/matrix.js';
-import * as Vector from './utility/vector.js';
 import LocalStorage from './utility/storage.js';
+import Vector2D from './utility/vector2d.js';
+import Vector3D from './utility/vector3d.js';
+import Matrix from './utility/matrix.js';
 
 class Engine {
     static async initialize() {
@@ -19,7 +20,7 @@ class Engine {
     constructor(gpu) {
         this.gpu = gpu;
         this.fps = new FPSCounter(document.getElementById("output-fps"), undefined, " fps");
-        this.camera = new Camera(document.getElementById("canvas"), Vector.vec(4.0), Vector.vec(-135.0, 35.0));
+        this.camera = new Camera(document.getElementById("canvas"), new Vector3D(4.0), new Vector2D(-135.0, 35.0));
         this.storage = new LocalStorage("renderer-raymarcher");
         this.gui = new GUIManager(document.getElementById("canvas"), this.gpu, this.camera, this.storage);
 
