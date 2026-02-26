@@ -1,16 +1,16 @@
-import Matrix from "./utility/matrix.js";
-import Vector2D from "./utility/vector2d.js"
-import Vector3D from "./utility/vector3d.js"
-import * as WebGL from "./utility/webgl.js";
-import * as Image from "./utility/image.js";
-import Vector from "./utility/vector.js";
+import Matrix from "../math/matrix.js";
+import Vector from "../math/vector.js";
+import Vector2D from "../math/vector2d.js"
+import Vector3D from "../math/vector3d.js"
+import * as WebGL from "./webgl.js";
+import * as Image from "../utility/image.js";
 
-export default class WebGLManager {
+export default class GPUManager {
     static async initialize(canvas) {
-        const compute_shader_code = await (await fetch('./scripts/shader/compute.glsl')).text();
-        const render_shader_code = await (await fetch('./scripts/shader/render.glsl')).text();
-        const sdf_code = await (await fetch('./scripts/shader/sphere.glsl')).text();
-        return new WebGLManager(canvas, compute_shader_code, render_shader_code, sdf_code);
+        const compute_shader_code = await (await fetch('./scripts/shaders/compute.glsl')).text();
+        const render_shader_code = await (await fetch('./scripts/shaders/render.glsl')).text();
+        const sdf_code = await (await fetch('./scripts/shaders/sphere.glsl')).text();
+        return new GPUManager(canvas, compute_shader_code, render_shader_code, sdf_code);
     }
 
     constructor(canvas, compute_shader_code, render_shader_code, sdf_code) {

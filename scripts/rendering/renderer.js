@@ -1,20 +1,20 @@
-import WebGLManager from './gpu.js'
+import GPUManager from './gpu.js'
 import GUIManager from './gui.js';
-import FPSCounter from './utility/fps.js';
-import Camera from './utility/camera.js';
-import LocalStorage from './utility/storage.js';
-import Vector2D from './utility/vector2d.js';
-import Vector3D from './utility/vector3d.js';
-import Matrix from './utility/matrix.js';
+import FPSCounter from '../utility/fps.js';
+import Camera from './camera.js';
+import LocalStorage from '../utility/storage.js';
+import Vector2D from '../math/vector2d.js';
+import Vector3D from '../math/vector3d.js';
+import Matrix from '../math/matrix.js';
 
-class Engine {
+class Renderer {
     static async initialize() {
         window.addEventListener("error", (event) => {
             document.getElementById("popup-error").classList.remove("hidden");
             document.getElementById("output-fail").innerText = event.error;
         });
-        const gpu = await WebGLManager.initialize(document.getElementById("canvas"));
-        return new Engine(gpu);
+        const gpu = await GPUManager.initialize(document.getElementById("canvas"));
+        return new Renderer(gpu);
     }
 
     constructor(gpu) {
@@ -47,7 +47,7 @@ class Engine {
     }
 }
 
-const engine = await Engine.initialize();
+const engine = await Renderer.initialize();
 let animation_id = requestAnimationFrame(animate);
 
 async function animate() {

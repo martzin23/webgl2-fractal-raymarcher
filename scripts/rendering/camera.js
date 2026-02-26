@@ -1,8 +1,8 @@
-import * as TouchListener from './pointer.js';
-import Matrix from './matrix.js';
-import Vector3D from './vector3d.js';
-import Vector2D from './vector2d.js';
-import Vector4D from './vector4d.js';
+import * as TouchListener from '../utility/pointer.js';
+import Matrix from '../math/matrix.js';
+import Vector3D from '../math/vector3d.js';
+import Vector2D from '../math/vector2d.js';
+import Vector4D from '../math/vector4d.js';
 
 export default class Camera {
     #key_states;
