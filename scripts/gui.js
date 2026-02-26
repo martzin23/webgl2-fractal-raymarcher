@@ -60,6 +60,14 @@ export default class GUIManager {
     updateValues() {
         document.querySelectorAll("menu *").forEach(element => {element.dispatchEvent(this.update_event);});
     }
+
+    updateAutoHide() {
+        const header = document.querySelector('header');
+        if (window.innerWidth > 600 && this.current_tab === null)
+            header.classList.add("auto-hide");
+        else
+            header.classList.remove("auto-hide");
+    }
     
     switchTab(value, update_buttons = true) {
         if (update_buttons) {
@@ -78,6 +86,8 @@ export default class GUIManager {
         } else {
             switchAttribute(element_menu, value + 1, undefined, "hidden");
         }
+
+        this.updateAutoHide();
     }
 
     scrollTab(delta) {
@@ -173,6 +183,10 @@ export default class GUIManager {
         document.addEventListener("touchmove", (event) => {
             if (this.auto_refresh)
                 gpu.refresh();
+        });
+
+        window.addEventListener("resize", () => {
+            this.updateAutoHide();
         });
     }
 

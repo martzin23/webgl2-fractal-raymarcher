@@ -137,17 +137,17 @@ section {
     margin-top: var(--spacing);
 }
 
-/* :root:fullscreen header>nav {
+:root:fullscreen header.auto-hide>nav {
     animation-name: hide-upward;
     animation-duration: 0.25s;
     animation-fill-mode: forwards;
 }
 
-:root:fullscreen header:hover>nav {
+:root:fullscreen header.auto-hide:hover>nav {
     animation-name: appear-downward;
     animation-duration: 0.25s;
     animation-fill-mode: forwards;
-} */
+}
 
 :root:fullscreen body>* {
     z-index: 2;
