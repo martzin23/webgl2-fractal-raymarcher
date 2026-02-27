@@ -12,15 +12,15 @@ export function createIncrement(set = (value) => {}, get = () => 0.0, name = "In
     const element_plus = document.createElement("i");
     element_plus.className = "fa fa-plus";
 
-    const element_increment = document.createElement("div");
-    element_increment.className = "button round";
+    const element_increment = document.createElement("button");
+    element_increment.className = "square";
     element_increment.appendChild(element_plus);
 
     const element_minus = document.createElement("i");
     element_minus.className = "fa fa-minus";
 
-    const element_decrement = document.createElement("div");
-    element_decrement.className = "button round";
+    const element_decrement = document.createElement("button");
+    element_decrement.className = "square";
     element_decrement.appendChild(element_minus);
 
     const element_name = document.createElement("p");

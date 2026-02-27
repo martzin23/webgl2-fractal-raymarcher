@@ -20,7 +20,7 @@ class Renderer {
     constructor(gpu) {
         this.gpu = gpu;
         this.fps = new FPSCounter(document.getElementById("output-fps"), undefined, " fps");
-        this.camera = new Camera(document.getElementById("canvas"), new Vector3D(4.0), new Vector2D(-135.0, 35.0));
+        this.camera = new Camera(document.getElementById("canvas"), new Vector3D(4.0), new Vector2D(-135.0, 35.0), 0.5, 0.05, 0.2, false, true);
         this.storage = new LocalStorage("renderer-raymarcher");
         this.gui = new GUIManager(document.getElementById("canvas"), this.gpu, this.camera, this.storage);
 

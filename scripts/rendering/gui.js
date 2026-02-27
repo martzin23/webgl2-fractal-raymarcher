@@ -67,11 +67,11 @@ export default class GUIManager {
     }
 
     updateValues() {
-        document.querySelectorAll("menu *").forEach(element => {element.dispatchEvent(this.update_event);});
+        document.querySelectorAll("body>menu *").forEach(element => {element.dispatchEvent(this.update_event);});
     }
 
     updateAutoHide() {
-        const header = document.querySelector('header');
+        const header = document.querySelector('body>header');
         if (window.innerWidth > 600 && this.current_tab === null)
             header.classList.add("auto-hide");
         else
@@ -219,7 +219,7 @@ export default class GUIManager {
         addToggle(document.getElementById("group-display"), (value) => { this.toggleFullscreen(); }, () => this.isFullscreen(), "Fullscreen");
         addIncrement(document.getElementById("group-display"), (value) => {gpu.uniforms.render_scale = value;},() => gpu.uniforms.render_scale , "Resolution division", 1, 16).addTooltip("Higher number = lower resolution, improves performance");
         addButton(document.getElementById("group-display"), () => {gpu.synchronize();}, "Fix aspect ratio").addTooltip("Click this if the image is stretched");
-        addToggle(document.getElementById("group-display"), (value) => { this.auto_refresh = value }, () => this.auto_refresh, "Auto refresh").addTooltip("Disable this when taking screenshots, otherwise the image will be noisy");
+        addToggle(document.getElementById("group-display"), (value) => { this.auto_refresh = value }, () => this.auto_refresh, "Auto refresh").addTooltip("Disable this when taking screenshots, otherwise the image will be noisy (shortcut: Tab)");
         addButton(document.getElementById("group-display"), () => {
             var current_date = new Date(); 
             var date_time = "" + current_date.getFullYear() + (current_date.getMonth() + 1) + current_date.getDate() + current_date.getHours() + current_date.getMinutes() + current_date.getSeconds();

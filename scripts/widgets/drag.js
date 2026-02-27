@@ -13,8 +13,7 @@ export function createDrag(set = (value) => {}, get = () => 0.0, name = "Drag", 
     const element_symbol = document.createElement("i");
     element_symbol.className = "fa fa-arrows-h";
 
-    const element_button = document.createElement("div");
-    element_button.className = "button";
+    const element_button = document.createElement("button");
     element_button.appendChild(element_symbol);
 
     const element_name = document.createElement("p");

@@ -68,18 +68,24 @@ body {
     gap: var(--spacing);
 }
 
-header {grid-area: h;}
-menu {grid-area: m;}
-canvas {grid-area: c;}
+body>header, body>menu, body>canvas {
+    border-radius: var(--roundness);
+    background-color: var(--general-dark);
+    box-shadow: 0.25rem 0.25rem 0rem var(--shadow);
+}
 
-canvas {
+body>header {grid-area: h;}
+body>menu {grid-area: m;}
+body>canvas {grid-area: c;}
+
+body>canvas {
     width: 100%;
     height: 100%;
     border-radius: var(--roundness);
     overflow-y: hidden;
 }
 
-header>nav {
+body>header>nav {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -89,7 +95,7 @@ header>nav {
     padding: 1rem;
 }
 
-menu {
+body>menu {
     padding: 0rem;
     overflow-y: auto;
     overflow-x: hidden;
@@ -112,7 +118,7 @@ section {
     grid-template-rows: 0fr 0fr;
 }
 
-:root:fullscreen canvas  {
+:root:fullscreen body>canvas  {
     border-radius: 0rem;
     position: absolute;
     top: 0rem;
@@ -121,29 +127,29 @@ section {
     height: 100vh;
 }
 
-:root:fullscreen header {
+:root:fullscreen body>header {
     padding-top: var(--spacing);
     height: fit-content;
 }
 
-:root:fullscreen header>nav {
+:root:fullscreen body>header>nav {
     background-color: var(--background-light);
 }
 
-:root:fullscreen menu {
+:root:fullscreen body>menu {
     background: linear-gradient(0deg, var(--background-dark) 0%, var(--background-light) 100%);
     height: min-content;
     max-height: calc(100vh - 4rem);
     margin-top: var(--spacing);
 }
 
-:root:fullscreen header.auto-hide>nav {
+:root:fullscreen body>header.auto-hide>nav {
     animation-name: hide-upward;
     animation-duration: 0.25s;
     animation-fill-mode: forwards;
 }
 
-:root:fullscreen header.auto-hide:hover>nav {
+:root:fullscreen body>header.auto-hide:hover>nav {
     animation-name: appear-downward;
     animation-duration: 0.25s;
     animation-fill-mode: forwards;
@@ -160,7 +166,7 @@ section {
 /* ----------------------------------------- */
 
 @media screen and (max-width: 768px) {
-    :root:fullscreen menu {
+    :root:fullscreen body>menu {
         max-height: calc(100vh - 2rem);
     }
 }
@@ -180,7 +186,7 @@ section {
         grid-template-rows: 0fr 2fr 1fr;
     }
 
-    :root:fullscreen menu {
+    :root:fullscreen body>menu {
         height: auto;
     }
 }

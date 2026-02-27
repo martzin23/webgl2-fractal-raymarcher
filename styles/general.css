@@ -1,0 +1,35 @@
+
+:root {
+    font-size: 14px;
+    --roundness: 0.5rem;
+    --thickness: 0.5rem;
+    --spacing: 2rem;
+    --packing: 0.5rem;
+    
+    --text-default: hsl(0, 0%, 95%);
+    --text-muted: hsl(0, 0%, 67%);
+
+    --general-highlight: #ffffff40;
+    --general-default: #ffffff20;
+    --general-dark: #04040540;
+
+    --background-light: #252933;
+    --background-dark: #321e16;
+
+    --accent-default: #c9411f;
+    --accent-dark: #981f0f;
+
+    --error-default: #cf3173;
+    --error-dark: #3b1826;
+
+    --warning-default: #d8973c;
+    --warning-dark: #56331f;
+
+    --shadow: #090c10;
+}
+
+@media screen and (max-width: 768px) {
+    :root {
+        --spacing: 1rem;
+    }
+}

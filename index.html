@@ -4,11 +4,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 	<title>Fractal Ray Marcher</title>
-	<link rel="stylesheet" href="./styles/variables.css">
-	<link rel="stylesheet" href="./styles/style_orange.css">
+	<link rel="stylesheet" href="./styles/general.css">
 	<link rel="stylesheet" href="./styles/keyframes.css">
+	<link rel="stylesheet" href="./styles/flex.css">
 	<link rel="stylesheet" href="./styles/widgets.css">
-	<link rel="stylesheet" href="./styles/index.css">
+	<link rel="stylesheet" href="./styles/layout.css">
 	<script type="module" defer src="./scripts/rendering/renderer.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -16,19 +16,20 @@
 <body>
 
 	<header>
-		<nav class="block">
+		<nav>
 			<div id="group-tabs"></div>
-			<div class="row">
-				<p class="value" id="output-fps">0 fps</p>
-				<a href="https://github.com/martzin23/webgl2-fractal-raymarcher" class="button">
+			<div class="row gap-small">
+				<samp id="output-fps">0 fps</samp>
+				<button>
 					<p>GitHub</p>
 					<i class="fa fa-external-link"></i>
-				</a>
+					<a href="https://github.com/martzin23/webgl2-fractal-raymarcher"></a>
+				</button>
 			</div>
 		</nav>
 	</header>
 
-	<menu class="block" id="menu">
+	<menu id="menu">
 
 		<section id="group-unselected" class="hidden">
 			<figure>
@@ -36,7 +37,7 @@
 					<hr>
 					<p>Unselected</p>
 				</figcaption>
-				<p class="comment">No settings tab selected.</p>
+				<em>No settings tab selected.</em>
 			</figure>
 		</section>
 
@@ -62,8 +63,8 @@
 				</figcaption>
 				<div id="group-camera-mode" class="column"></div>
 				<div>
-					<div id="group-camera-firstperson" class="column"></div>
-					<div id="group-camera-orbit" class="column"></div>
+					<div id="group-camera-firstperson" class="column gap-small"></div>
+					<div id="group-camera-orbit" class="column gap-small"></div>
 				</div>
 			</figure>
 		</section>
@@ -95,13 +96,13 @@
 					<hr>
 					<p>Shape parameters</p>
 				</figcaption>
-				<p class="comment">Try changing some values to see how they impact the shape of the body</p>
+				<em>Try changing some values to see how they impact the shape of the body</em>
 				<div id="group-variables">
-					<div id="group-custom" class="column"></div>
-					<div id="group-mandelbox" class="column"></div>
-					<div id="group-mandelbulb" class="column"></div>
-					<div id="group-kochcurve" class="column"></div>
-					<div id="group-juliabulb" class="column"></div>
+					<div id="group-custom" class="column gap-small"></div>
+					<div id="group-mandelbox" class="column gap-small"></div>
+					<div id="group-mandelbulb" class="column gap-small"></div>
+					<div id="group-kochcurve" class="column gap-small"></div>
+					<div id="group-juliabulb" class="column gap-small"></div>
 				</div>
 			</figure>
 
@@ -128,16 +129,16 @@
 				</figcaption>
 				<p>Here you can write a custom signed distance function in GLSL that describes a body. The parameters and return value type are defined here:</p>
 				<div class="row">
-					<div class="value">p</div>
-					<p class="comment">parameter - a position in 3D space</p>
+					<samp>p</samp>
+					<em>parameter - a position in 3D space</em>
 				</div>
 				<div class="row">
-					<div class="value">return value</div>
-					<p class="comment">distance from the body</p>
+					<samp>return value</samp>
+					<em>distance from the body</em>
 				</div>
 				<div class="row">
-					<div class="value">uniforms.custom_a</div>
-					<p class="comment">A float variable that can be changed in real time in the Ray Marching tab. There are five of them (a,b,c,d,e).</p>
+					<samp>uniforms.custom_a</samp>
+					<em>A float variable that can be changed in real time in the Ray Marching tab. There are five of them (a,b,c,d,e).</em>
 				</div>
 				
 			</figure>
@@ -148,7 +149,7 @@
 					<p>Code</p>
 				</figcaption>
 				<div language="GLSL" class="code">
-					<textarea spellcheck="false" rows="20" class="code" id="input-code"></textarea>
+					<textarea spellcheck="false" rows="20" class="code" id="input-code" wrap="off"></textarea>
 				</div>
 			</figure>
 			
@@ -168,16 +169,16 @@
                     <p>Controls (PC)</p>
                 </figcaption>
                 <div class="row">
-                    <p class="value">Hold mouse</p>
-                    <p class="comment">Activate camera control</p>
+                    <samp>Hold mouse</samp>
+                    <em>Activate camera control</em>
                 </div>
                 <div class="row">
-                    <p class="value">F11</p>
-                    <p class="comment">Toggle fullscreen</p>
+                    <samp>F11</samp>
+                    <em>Toggle fullscreen</em>
                 </div>
                 <div class="row">
-                    <p class="value">Up/Down arrow</p>
-                    <p class="comment">Change resolution</p>
+                    <samp>Up/Down arrow</samp>
+                    <em>Change resolution</em>
                 </div>
             </figure>
             <figure>
@@ -186,20 +187,20 @@
                     <p>Controls (PC) (Orbit mode)</p>
                 </figcaption>
                 <div class="row">
-                    <p class="value">ADQE</p>
-                    <p class="comment">Rotate</p>
+                    <samp>ADQE</samp>
+                    <em>Rotate</em>
                 </div>
                 <div class="row">
-                    <p class="value">WS</p>
-                    <p class="comment">Zoom</p>
+                    <samp>WS</samp>
+                    <em>Zoom</em>
                 </div>
                 <div class="row">
-                    <p class="value">Mouse</p>
-                    <p class="comment">Rotate</p>
+                    <samp>Mouse</samp>
+                    <em>Rotate</em>
                 </div>
                 <div class="row">
-                    <p class="value">Scroll</p>
-                    <p class="comment">Zoom</p>
+                    <samp>Scroll</samp>
+                    <em>Zoom</em>
                 </div>
             </figure>
             <figure>
@@ -208,16 +209,16 @@
                     <p>Controls (PC) (First person mode)</p>
                 </figcaption>
                 <div class="row">
-                    <p class="value">WASDQE</p>
-                    <p class="comment">Movement</p>
+                    <samp>WASDQE</samp>
+                    <em>Movement</em>
                 </div>
                 <div class="row">
-                    <p class="value">Mouse</p>
-                    <p class="comment">Rotate</p>
+                    <samp>Mouse</samp>
+                    <em>Rotate</em>
                 </div>
                 <div class="row">
-                    <p class="value">Scroll</p>
-                    <p class="comment">Change camera speed</p>
+                    <samp>Scroll</samp>
+                    <em>Change camera speed</em>
                 </div>
             </figure>
             <figure>
@@ -226,30 +227,30 @@
                     <p>Controls (Mobile)</p>
                 </figcaption>
                 <div class="row">
-                    <p class="value">Drag</p>
-                    <p class="comment">Rotate camera</p>
+                    <samp>Drag</samp>
+                    <em>Rotate camera</em>
                 </div>
                 <div class="row">
-                    <p class="value">Zoom</p>
-                    <p class="comment">Move foward/backward</p>
+                    <samp>Zoom</samp>
+                    <em>Move foward/backward</em>
                 </div>
             </figure>
 		</section>
 	</menu>
 
-	<canvas id="canvas" class="block"></canvas>
+	<canvas id="canvas"></canvas>
 
-	<div class="popup hidden" onclick="this.classList.add('hidden')" id="popup-error">
+	<div class="popup hidden" id="popup-error">
 		<div>
-			<div class="row">
+			<header>
 				<i class="fa fa-times"></i>		
 				<p>Error</p>
-			</div>
-			<p id="output-fail">This device does not support WebGL!</p>
-			<div class="button" onclick="location.reload();">
+			</header>
+			<samp id="output-fail">This device does not support WebGL!</samp>
+			<button onclick="location.reload();">
 				<i class="fa fa-refresh"></i>
 				<p>Restart</p>
-			</div>
+			</button>
 		</div>
 	</div>
 </body>
