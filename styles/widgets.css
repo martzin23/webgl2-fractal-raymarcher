@@ -354,10 +354,16 @@ textarea {
     animation-fill-mode: forwards;
 }
 
-
 figure>*[tooltip]:hover::after {
     width: max-content;
     max-width: 25rem;
+}
+
+
+@media screen and (max-width: 768px) {
+    *[tooltip]:hover::after {
+        display: none;
+    }
 }
 
 /* ----------------------------------------- */
