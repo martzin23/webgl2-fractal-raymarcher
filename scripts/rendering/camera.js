@@ -60,13 +60,29 @@ export default class Camera {
         });
 
         TouchListener.addTouchListener(canvas, (event) => {
-            if (this.orbit_mode) 
+            if (this.orbit_mode) {
                 this.updateOrbit(event.drag_x, event.drag_y);
-            else
-                this.updateRotation(-event.drag_x, -event.drag_y);
 
-            if (event.zoom != 0)
-                this.position = Vector3D.add(this.position, Vector3D.mul(Matrix.rot2dir(this.rotation.x, -this.rotation.y), this.speed * event.zoom));
+                if (event.zoom != 0)
+                    this.position = Vector3D.add(this.position, Vector3D.mul(Matrix.rot2dir(this.rotation.x, -this.rotation.y), this.sensitivity * event.zoom));
+            } 
+            else {
+                this.updateRotation(-event.drag_x, -event.drag_y);
+                if (event.pan_x != 0 || event.pan_y != 0) {
+                    const forward = Matrix.rot2dir(this.rotation.x, -this.rotation.y);
+                    const up = Matrix.rot2dir(this.rotation.x, -this.rotation.y + 90);
+                    const right = Vector3D.cross(forward, up);
+                    this.position = Vector3D.add(
+                        this.position, 
+                        Vector3D.mul(forward, 0.0 * this.speed), 
+                        Vector3D.mul(right, -event.pan_x * this.speed), 
+                        Vector3D.mul(up, event.pan_y * this.speed)
+                    );
+                }
+                if (event.zoom != 0)
+                    this.position = Vector3D.add(this.position, Vector3D.mul(Matrix.rot2dir(this.rotation.x, -this.rotation.y), this.speed * event.zoom));
+            }
+
         });
 
         document.addEventListener('wheel', (event) => {

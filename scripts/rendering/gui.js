@@ -21,6 +21,7 @@ export default class GUIManager {
         this.setupListeners(canvas, gpu, camera);
         this.setupWidgets(gpu, camera, storage);
         this.update_handler = setInterval(() => { this.updateValues(); }, 500);
+        this.updateAutoHide();
     }
 
     toggleFullscreen() {
@@ -72,7 +73,7 @@ export default class GUIManager {
 
     updateAutoHide() {
         const header = document.querySelector('body>header');
-        if (window.innerWidth > 600 && this.current_tab === null)
+        if (window.innerWidth > 1024 && this.current_tab === null)
             header.classList.add("auto-hide");
         else
             header.classList.remove("auto-hide");
@@ -179,9 +180,8 @@ export default class GUIManager {
         });
         
         document.addEventListener('wheel', (event) => {
-            if (camera.orbit_mode) {
+            if (camera.orbit_mode)
                 gpu.refresh();
-            }
         });
 
         document.addEventListener('mousemove', () => {
@@ -206,12 +206,12 @@ export default class GUIManager {
             document.getElementById("group-tabs"), 
             (value) => { this.switchTab(value, false); }, 
             [
-                '<i class="fa fa-cog"></i>General', 
-                '<i class="fa fa-location-arrow"></i>Ray Marching', 
-                '<i class="fa fa-terminal"></i>Custom Code',
-                '<i class="fa fa-info"></i>Controls',
+                '<i class="fa fa-cog"></i><p>General</p>', 
+                '<i class="fa fa-location-arrow"></i><p>Ray Marching</p>', 
+                '<i class="fa fa-terminal"></i><p>Custom Code</p>',
+                '<i class="fa fa-info"></i><p>Controls</p>',
             ], 
-            '<i class="fa fa-cog"></i>General',
+            '<i class="fa fa-cog"></i><p>General</p>',
             undefined,
             true
         );

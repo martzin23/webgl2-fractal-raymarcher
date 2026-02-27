@@ -156,7 +156,7 @@ section {
 
 /* ----------------------------------------- */
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
     :root:fullscreen body>menu {
         max-height: calc(100vh - 2rem);
     }
