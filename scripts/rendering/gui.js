@@ -160,6 +160,8 @@ export default class GUIManager {
                     this.auto_refresh = !this.auto_refresh;
                     break;
                 case "Enter":
+                    if (document.activeElement.tagName === "TEXTAREA") return;
+                    event.preventDefault();
                     document.activeElement?.blur();
                     break;
             }

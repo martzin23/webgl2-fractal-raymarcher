@@ -124,7 +124,7 @@ export default class GPUManager {
         this.gl.bindBufferBase(this.gl.UNIFORM_BUFFER, uniform_binding_number, this.uniform_buffer);
         this.gl.bufferData(this.gl.UNIFORM_BUFFER, uniform_array.byteLength, this.gl.DYNAMIC_DRAW);
 
-        this.setup(compute_shader_code + "\n" + sdf_code, render_shader_code);
+        this.setup(this.compute_shader_code.replace("#import SDF", sdf_code), this.render_shader_code);
         this.synchronize();
     }
 
@@ -218,7 +218,7 @@ export default class GPUManager {
         try {
             this.gl.deleteProgram(this.render_program);
             this.gl.deleteProgram(this.compute_program);
-            this.setup(this.compute_shader_code + "\n" + sdf_code, this.render_shader_code);
+            this.setup(this.compute_shader_code.replace("#import SDF", sdf_code), this.render_shader_code);
             this.refresh();
         } catch (error) {
             message = error;

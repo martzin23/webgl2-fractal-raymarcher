@@ -49,6 +49,8 @@ struct Data {
 in vec2 texture_coordinates;
 out vec4 output_color;
 
+#import SDF
+
 vec3 pathTrace(Ray camera_ray, inout uint seed);
 Data rayMarch(Ray ray);
 void focusBlur(inout Ray ray, inout uint seed, const float dist, const float strength);
@@ -57,7 +59,6 @@ vec3 skyValue(vec3 direction);
 float randomUniform(inout uint seed);
 float randomNormal(inout uint seed);
 vec3 randomDirection(inout uint seed);
-float SDF(vec3 p);
 
 void main() {
     float aspect_ratio = uniforms.canvas_size.y / uniforms.canvas_size.x;
@@ -178,6 +179,7 @@ float randomUniform(inout uint seed) {
     seed *= (seed + uint(195439)) * (seed + uint(124395)) * (seed + uint(845921));
     return float(seed) / 4294967295.0;
     // return float(seed) / 64535.0;
+    // return max(float(seed) / 64535.0, 0.001);
 }
 
 float randomNormal(inout uint seed) {
