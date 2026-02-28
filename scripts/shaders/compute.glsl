@@ -109,6 +109,8 @@ void main() {
         pixel_color = vec3(mix(0.0, factor, float(data.collided)));
         output_color = vec4(previous_color.xyz * ((uniforms.temporal_counter - 1.0) / uniforms.temporal_counter) + pixel_color * (1.0 / uniforms.temporal_counter), 1.0);
     }
+
+    // output_color = vec4(randomDirection(seed), 1.0);
 }
 
 vec3 pathTrace(Ray camera_ray, inout uint seed) {
@@ -175,6 +177,7 @@ float randomUniform(inout uint seed) {
     // https://www.youtube.com/@SebastianLague
     seed *= (seed + uint(195439)) * (seed + uint(124395)) * (seed + uint(845921));
     return float(seed) / 4294967295.0;
+    // return float(seed) / 64535.0;
 }
 
 float randomNormal(inout uint seed) {

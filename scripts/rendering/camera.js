@@ -40,23 +40,43 @@ export default class Camera {
                 this.#key_states[event.key] = false;
         });
 
-        canvas.addEventListener('mousedown', () => {
-            this.enabled = true;
-            const move_handler = (event) => {
-                if (this.orbit_mode)
-                    this.updateOrbit(event.movementX, event.movementY);
-                else
-                    this.updateRotation(-event.movementX, -event.movementY);
-            };
+        // canvas.addEventListener('mousedown', () => {
+        //     this.enabled = true;
+        //     const move_handler = (event) => {
+        //         if (this.orbit_mode)
+        //             this.updateOrbit(event.movementX, event.movementY);
+        //         else
+        //             this.updateRotation(-event.movementX, -event.movementY);
+        //     };
 
-            const exit_handler = () => {
-                this.enabled = false;
-                document.removeEventListener("mousemove", move_handler);
-                document.removeEventListener("mouseup", exit_handler);
-            };
+        //     const exit_handler = () => {
+        //         this.enabled = false;
+        //         document.removeEventListener("mousemove", move_handler);
+        //         document.removeEventListener("mouseup", exit_handler);
+        //     };
 
-            document.addEventListener("mousemove", move_handler);
-            document.addEventListener("mouseup", exit_handler);
+        //     document.addEventListener("mousemove", move_handler);
+        //     document.addEventListener("mouseup", exit_handler);
+        // });
+
+        canvas.addEventListener('click', () => {
+            // if (mobile) return;
+            if (document.pointerLockElement === null)
+                canvas.requestPointerLock({ unadjustedMovement: true }).catch(() => {});
+            else
+                document.exitPointerLock();
+        });
+
+        document.addEventListener("pointerlockchange", () => {
+                this.enabled = !!document.pointerLockElement;
+        });
+        
+        document.addEventListener("mousemove", (event) => {
+            if (!this.enabled) return;
+            if (this.orbit_mode)
+                this.updateOrbit(event.movementX, event.movementY);
+            else
+                this.updateRotation(-event.movementX, -event.movementY);
         });
 
         TouchListener.addTouchListener(canvas, (event) => {
