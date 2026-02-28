@@ -41,27 +41,7 @@ export default class Camera {
                 this.#key_states[event.key] = false;
         });
 
-        // canvas.addEventListener('mousedown', () => {
-        //     this.enabled = true;
-        //     const move_handler = (event) => {
-        //         if (this.orbit_mode)
-        //             this.updateOrbit(event.movementX, event.movementY);
-        //         else
-        //             this.updateRotation(-event.movementX, -event.movementY);
-        //     };
-
-        //     const exit_handler = () => {
-        //         this.enabled = false;
-        //         document.removeEventListener("mousemove", move_handler);
-        //         document.removeEventListener("mouseup", exit_handler);
-        //     };
-
-        //     document.addEventListener("mousemove", move_handler);
-        //     document.addEventListener("mouseup", exit_handler);
-        // });
-
         canvas.addEventListener('click', () => {
-            // if (mobile) return;
             if (document.pointerLockElement === null)
                 canvas.requestPointerLock({ unadjustedMovement: true }).catch(() => {});
             else
@@ -82,7 +62,7 @@ export default class Camera {
 
         TouchListener.addTouchListener(canvas, (event) => {
             if (this.orbit_mode) {
-                this.updateOrbit(event.drag_x, event.drag_y);
+                this.updateOrbit(event.drag_x * this.sensitivity * 4.0, event.drag_y * this.sensitivity * 4.0);
 
                 if (event.zoom != 0)
                     this.position = Vector3D.add(this.position, Vector3D.mul(Matrix.rot2dir(this.rotation.x, -this.rotation.y), this.sensitivity * event.zoom));
