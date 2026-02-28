@@ -159,6 +159,9 @@ export default class GUIManager {
                     if (this.isTyping()) return;
                     this.auto_refresh = !this.auto_refresh;
                     break;
+                case "Enter":
+                    document.activeElement?.blur();
+                    break;
             }
         });
 

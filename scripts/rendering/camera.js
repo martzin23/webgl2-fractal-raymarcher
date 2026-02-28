@@ -175,7 +175,7 @@ export default class Camera {
                 Vector3D.mul(up, local_direction.z * this.speed)
             );
         } else {
-            this.updateOrbit(-local_direction.x * this.speed, local_direction.z * this.speed, 1.0 + -0.003 * this.speed * local_direction.y);
+            this.updateOrbit(-local_direction.x * this.speed * 100, local_direction.z * this.speed * 100, 1.0 + -0.003 * 100 * this.speed * local_direction.y);
         }
     }
 
