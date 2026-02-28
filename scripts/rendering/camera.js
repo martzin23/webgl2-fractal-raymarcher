@@ -29,6 +29,7 @@ export default class Camera {
         this.orbit_anchor = orbit_anchor;
         this.enabled = false;
         this.#key_states = {};
+        if (this.orbit_mode) this.updateOrbit();
 
         document.addEventListener('keydown', (event) => {
             if (event.key == 'w' || event.key == 'a' || event.key == 's' || event.key == 'd' || event.key == 'q' || event.key == 'e')
