@@ -86,6 +86,12 @@ export default class Camera {
 
         });
 
+        
+        document.addEventListener('wheel', (event) => {
+            if(this.enabled)
+                event.preventDefault();
+        }, { passive: false });
+
         document.addEventListener('wheel', (event) => {
             if (this.enabled) {
                 if (this.orbit_mode) {
