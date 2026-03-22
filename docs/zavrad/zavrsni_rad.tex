@@ -1,0 +1,205 @@
+\documentclass[zavrsnirad]{fer}
+% Dodaj opciju upload za generiranje konačne verzije koja se učitava na FERWeb
+% Add the option upload to generate the final version which is uploaded to FERWeb
+\usepackage{blindtext}
+
+\usepackage{xcolor}
+\newcommand{\todo}[1]{{\textcolor{red}{[#1]}}}
+
+%--- PODACI O RADU / THESIS INFORMATION ----------------------------------------
+
+% Naslov na engleskom jeziku / Title in English
+\title{Visualization of three-dimensional fractal objects in WebGL2}
+
+% Naslov na hrvatskom jeziku / Title in Croatian
+\naslov{Vizualizacija trodimenzijskih fraktalnih objekata u WebGL2 okruženju}
+
+% Broj rada / Thesis number
+\brojrada{2220}
+
+% Autor / Author
+\author{Martin Golub}
+
+% Mentor 
+\mentor{Prof. dr. sc.\@ Željka Mihajlović}
+
+% Datum rada na engleskom jeziku / Date in English
+\date{June, 2026}
+
+% Datum rada na hrvatskom jeziku / Date in Croatian
+\datum{lipanj, 2026.}
+
+%-------------------------------------------------------------------------------
+
+\begin{document}
+
+% Naslovnica se automatski generira / Titlepage is automatically generated
+\maketitle
+
+%--- ZADATAK / THESIS ASSIGNMENT -----------------------------------------------
+
+% Zadatak se ubacuje iz vanjske datoteke / Thesis assignment is included from external file
+% Upiši ime PDF datoteke preuzete s FERWeb-a / Enter the filename of the PDF downloaded from FERWeb
+\zadatak{dependencies/hr_0036559810_73.pdf}
+
+%--- ZAHVALE / ACKNOWLEDGMENT --------------------------------------------------
+
+\begin{zahvale}
+  % Ovdje upišite zahvale / Write in the acknowledgment
+\end{zahvale}
+
+% Odovud započinje numeriranje stranica / Page numbering starts from here
+\mainmatter
+
+% Sadržaj se automatski generira / Table of contents is automatically generated
+\tableofcontents
+
+%--- UVOD / INTRODUCTION -------------------------------------------------------
+
+\chapter{Uvod}
+\label{pog:uvod}
+[uvod]
+
+% Neki od radova koje ćemo citirati su \cite{6248073,6247753,ghiglia_pritt_phase_unwrapping,hartley2003multiple,4250461,123DCatch}.
+% Trebaju nam samo radi testiranja kako izgleda referenciranje rada s konferencije, rada iz časopisa, knjige i Internetske stranice.
+
+% \begin{figure}[htb]
+%   \centering
+%   \includegraphics[width=0.38\linewidth]{Figures/lenovo_yoga_tab3_pro_front.png} 
+%   \caption{Moja prva slika}
+%   \label{slk:prvaslika}
+% \end{figure}
+
+% Referenciramo se na sliku \ref{slk:prvaslika} u sredini rečenice, zatim prije zareza \ref{slk:prvaslika}, te zatim na kraju rečenice % \ref{slk:prvaslika}.
+% Upravo smo testirali radi li naredba \verb|\ref| ispravno u slučaju kada nakon nje slijedi točka.
+
+% Sada slijedi jedna jednadžba:
+% \begin{equation}
+%   \label{jed:prvajednadzba}
+%   \int_{-\infty}^{+\infty}f(t)\,dt=F(\omega)
+% \end{equation}
+% Jednadžba \eqref{jed:prvajednadzba} je moja prva jednadžba koja defnira par $f(t)\ufrek F(\omega)$ ili $F(\omega)\uvrem f(t)$.
+
+%--- GLAVNI DIO ----------------------------------------------------------------------------
+
+\chapter{Teorija}
+\label{pog:teorija}
+
+\section{Funkcije udaljenosti}
+Postoji više načina na koje se može zapisati neko tijelo. U računalnoj grafici se najčešće trodimenzionalni modeli opisuju mrežom trokuta. Trokuti su praktični jer imaju jednostavnu strukturu i mogu se efikasno iscrtati. Unatoč toga, postoje nedostatci takvim pristupom. Da bi se izgradila zakrivljena površina, potrebno je izgraditi površinu s velikim brojem trokuta. Time površina nikad neće biti uistinu zakrivljena, nego će se sastojati od diskretnih ravnih dijelova. Još jedan nedostatak je gubitak detalja. Neke strukture (kao na primjer spužvaste strukture) zahtijevaju toliko veliki broj trokuta da se ne mogu s dovoljnom brzinom prikazivati i mora se napraviti kompromis brisanjem detalja strukture radi optimizacije. Detalji se općenito naknadno dodaju modelima koristeći teksture i druge metode, no geometrija ostaje pojednostavljena.
+
+Način prikaza tijela koje će se razmatrati u ovom radu jer matematički opis. Specifično, ono što ovaj rad koristi su funkcije udaljenosti (\emph{eng. Signed Distance Function, SDF}). Njihov najjednostavniji oblik je sljedeće: $f(p)$. Gdje je $p$ točka u prostoru, a rezultat funkcije $f(p)$ je minimalna udaljenost te točke od površine tijela koju funkcija opisuje. Dimenzija prostora u kojem se mora nalaziti ulazna točka određuje funkcija. \todo{opis slike} Osim vraćanja vrijednost udaljenosti, drugo važno svojstvo funkcije je predznak rezultata. Vrijednost udaljenosti je pozivitna kada je točka izvan tijela (slika \ref{slk:sdf}, narančasti dio), a negativna kada je točka unutar tijela (slika \ref{slk:sdf}, plavi dio). S navedenim svojstvima je moguće potpuno opisati neko trodimenzionalno tijelo. Nadalje, to je i dovoljno za izgraditi prikaz tog tijela.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.38\linewidth]{images/sdf.png}
+    \caption{Ilustracija funkcije udaljenosti \cite{sdf} \todo{bolja slika}}
+    \label{slk:sdf}
+\end{figure}
+
+\section{Fraktali}
+Fraktali su objekti kojima se svojstva ponavljaju.
+
+[definicija, primjeri]
+[fraktal u prirodi - biljka]
+
+\section{Algoritam iscrtavanja}
+[sphere tracing]
+[slika]
+[pseudokod]
+
+\chapter{Implementacija}
+\label{pog:implementacija}
+
+\section{Korišteni alati}
+\subsection{WebGL2}
+[webgl]
+[uvod, svojstva]
+[nema compute shadera]
+
+\subsection{JavaScript i HTML}
+[javascript i html]
+[interaktivnost, sučelje, mobilno]
+
+\section{Opis komunikacije između objekta}
+[renderer, camera, gpumanager, guimanager]
+[graf]
+
+\section{Redoslijed grafičkih operacija}
+[pipeline opis]
+[graf]
+
+\section{Korisničko sučelje}
+[vrste inputa, kontrole, mobilno]
+
+\section{Prikaz funkcija udaljenosti}
+
+\subsection{Unos funkcije}
+[jezik, funkcije, errori]
+[kako radi]
+
+\subsection{Ponuđeni fraktali}
+[mandelbox, mandelbulb, koch curve, julia bulb]
+[slike]
+
+\subsection{Načini prikaza}
+[marches, normal, phong, pathtracing]
+[slike]
+
+\section{Web stranica i izvorni kod}
+
+Izvorni kod rada se nalazi na \emph{GitHub} repozitoriju preko sljedeće poveznice: \newline
+\url{https://github.com/martzin23/webgl2-fractal-raymarcher}
+
+Aplikacija se izvodi na web pregledniku i kompatabilna je s mobilnim uređajima. Bitno je naglasiti da program neće ispravno raditi ako uređaj ili web preglenik ne podržavaju sve WebGL2 značajke koje se koriste. Aplikacija je dostupna na navedenoj poveznici: \newline
+\url{https://martzin23.github.io/webgl2-fractal-raymarcher/}
+
+%--- REZULTATI I RASPRAVA ----------------------------------------------------------------------------
+
+\chapter{Rezultati i rasprava}
+\label{pog:rezultati_i_rasprava}
+[kvaliteta]
+[performanse]
+[slike]
+
+%--- ZAKLJUČAK / CONCLUSION ----------------------------------------------------
+
+\chapter{Zaključak}
+\label{pog:zakljucak}
+[zakljucak]
+
+%--- LITERATURA / REFERENCES ---------------------------------------------------
+
+% Literatura se automatski generira iz zadane .bib datoteke / References are automatically generated from the supplied .bib file
+% Upiši ime BibTeX datoteke bez .bib nastavka / Enter the name of the BibTeX file without .bib extension
+\bibliography{dependencies/literatura}
+
+%--- SAŽETAK / ABSTRACT --------------------------------------------------------
+
+% Sažetak na hrvatskom
+\begin{sazetak}
+  [Unesite sažetak na hrvatskom.]
+\end{sazetak}
+
+\begin{kljucnerijeci}
+  [fraktali; WebGL2; koračenje zrakom; praćenje sfera; funkcija daljine]
+\end{kljucnerijeci}
+
+% Abstract in English
+\begin{abstract}
+  [Enter the abstract in English.]
+\end{abstract}
+
+\begin{keywords}
+  [fractals; WebGL2; ray marching; sphere tracing; signed distance function]
+\end{keywords}
+
+%--- PRIVITCI / APPENDIX -------------------------------------------------------
+
+% Sva poglavlja koja slijede će biti označena slovom i riječi privitak / All following chapters will be denoted with an appendix and a letter
+% \backmatter
+
+% \chapter{The Code}
+% [???]
+
+\end{document}
