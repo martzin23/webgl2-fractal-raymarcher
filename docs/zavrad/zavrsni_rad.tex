@@ -5,6 +5,7 @@
 
 \usepackage{xcolor}
 \newcommand{\todo}[1]{{\textcolor{red}{[#1]}}}
+\usepackage{listings}
 
 %--- PODACI O RADU / THESIS INFORMATION ----------------------------------------
 
@@ -86,9 +87,9 @@
 \label{pog:teorija}
 
 \section{Funkcije udaljenosti}
-Postoji više načina na koje se može zapisati neko tijelo. U računalnoj grafici se najčešće trodimenzionalni modeli opisuju mrežom trokuta. Trokuti su praktični jer imaju jednostavnu strukturu i mogu se efikasno iscrtati. Unatoč toga, postoje nedostatci takvim pristupom. Da bi se izgradila zakrivljena površina, potrebno je izgraditi površinu s velikim brojem trokuta. Time površina nikad neće biti uistinu zakrivljena, nego će se sastojati od diskretnih ravnih dijelova. Još jedan nedostatak je gubitak detalja. Neke strukture (kao na primjer spužvaste strukture) zahtijevaju toliko veliki broj trokuta da se ne mogu s dovoljnom brzinom prikazivati i mora se napraviti kompromis brisanjem detalja strukture radi optimizacije. Detalji se općenito naknadno dodaju modelima koristeći teksture i druge metode, no geometrija ostaje pojednostavljena.
+Postoji više načina na koje se može zapisati neko tijelo. U računalnoj grafici se najčešće trodimenzionalni modeli opisuju mrežom trokuta. Trokuti su praktični jer imaju jednostavnu strukturu i mogu se efikasno iscrtati. Unatoč toga, postoje nedostatci takvim pristupom. Da bi se postigla zakrivljena površina, potrebno je izgraditi površinu s velikim brojem trokuta. Time površina nikad neće biti uistinu zakrivljena, nego će se sastojati od diskretnih ravnih dijelova. Neke strukture (kao na primjer spužvaste strukture) zahtijevaju toliko veliki broj trokuta da mora se napraviti kompromis brisanjem detalja strukture radi optimizacije. Detalji se općenito dodaju modelima koristeći teksture, no u tim slućajevima stvarna geometrija još uvijek ostaje pojednostavljena.
 
-Način prikaza tijela koje će se razmatrati u ovom radu jer matematički opis. Specifično, ono što ovaj rad koristi su funkcije udaljenosti (\emph{eng. Signed Distance Function, SDF}). Njihov najjednostavniji oblik je sljedeće: $f(p)$. Gdje je $p$ točka u prostoru, a rezultat funkcije $f(p)$ je minimalna udaljenost te točke od površine tijela koju funkcija opisuje. Dimenzija prostora u kojem se mora nalaziti ulazna točka određuje funkcija. \todo{opis slike} Osim vraćanja vrijednost udaljenosti, drugo važno svojstvo funkcije je predznak rezultata. Vrijednost udaljenosti je pozivitna kada je točka izvan tijela (slika \ref{slk:sdf}, narančasti dio), a negativna kada je točka unutar tijela (slika \ref{slk:sdf}, plavi dio). S navedenim svojstvima je moguće potpuno opisati neko trodimenzionalno tijelo. Nadalje, to je i dovoljno za izgraditi prikaz tog tijela.
+Način prikaza tijela koje će se razmatrati u ovom radu jer matematički opis. Specifično, ono što ovaj rad koristi su funkcije udaljenosti (\emph{eng. Signed Distance Function, SDF}).  Oblik funkcije je sljedeći: $f(p)$. Gdje je $p$ točka u prostoru, a rezultat funkcije $f(p)$ je minimalna udaljenost te točke od površine tijela koju funkcija opisuje. Dimenzija prostora u kojem se mora nalaziti ulazna točka određuje funkcija. Slika \ref{slk:sdf} skicira vrijednosti funkcije udaljenosti pravokutnika. Crte na slici prikazuju gdje su vrijednosti funkcije jednake (mogu se zamisliti kao izohipse na topografksoj karti). Osim vraćanja vrijednost udaljenosti, drugo važno svojstvo funkcije je predznak rezultata. Vrijednost udaljenosti je pozivitna kada je točka izvan tijela (slika \ref{slk:sdf}, \todo{narančasti} dio), a negativna kada je točka unutar tijela (slika \ref{slk:sdf}, \todo{plavi} dio). S navedenim svojstvima je moguće potpuno opisati neko trodimenzionalno tijelo. Nadalje, to je i dovoljno za izgraditi prikaz tog tijela.
 
 \begin{figure}
     \centering
@@ -98,15 +99,22 @@ Način prikaza tijela koje će se razmatrati u ovom radu jer matematički opis. 
 \end{figure}
 
 \section{Fraktali}
-Fraktali su objekti kojima se svojstva ponavljaju.
+Najčešće koristimo matematički zapis za opis jednostavnih oblika kao ravnine, sfere i trokuti. Ako pokušavamo matematički opisati neki kompleksniji oblik kao na primjer zec, brzo postane očito da će to biti vrlo teško. Može se pretpostaviti da je vrlo kompleksne oblike još teže opisati formulom. No, to nije istina. Ispada da jednostavna formula može napraviti vrlo detaljan oblik, najbolji primjer toga su fraktali. Fraktali su objekti sa svojstvom samoponavljanja. Postoji uzorak (ili \emph{pattern}) koji se ponavlja po modelu, na raznim mjestima i raznim veličinama. Ponavljanje tog uzorka može ići do beskonačnosti, što znaći da je fraktal u teoriji ima beskonačno detalja. Ovdje funkcije daljine postanu vrlo korisne jer se mogu korisiti za opis fraktala. 
 
-[definicija, primjeri]
-[fraktal u prirodi - biljka]
+\todo{fraktal u prirodi - biljka}
 
 \section{Algoritam iscrtavanja}
-[sphere tracing]
-[slika]
-[pseudokod]
+Cilj je postići prikaz fraktala. Potrebno je napraviti algoritam koji uzima opis tijela u obliku funkcije u daljenosti i iscrtava trodimenzionalni prikaz tog tijela na ekranu. Koristiti će se metoda praćenja sfere, što je podvrsta metode koračenja zrake, što je još podvrsta metode praćenja zrake. Metoda praćenja zrake (\emph{engl. Ray Tracing}) određuje boju svakog piksela pomoću zrake koja počinje u očištu kamere i prolazi kroz taj piksel. Metoda koračenja (\emph{engl. Ray Marching}) zrake koristi definiranu zraku tako da postepeno korači u smjeru zrake tijekom računanja. Praćenje sfere (\emph{engl. Sphere Tracing}) dalje definira koračenje tako da je duljina svakog koraka određena na temelju funkcije udaljenosti.
+
+\todo{slika}
+\todo{pseudokod}
+
+\begin{lstlisting}
+testirali
+  test2 {
+    tri
+  }
+\end{lstlisting}
 
 \chapter{Implementacija}
 \label{pog:implementacija}
@@ -121,11 +129,11 @@ Fraktali su objekti kojima se svojstva ponavljaju.
 [javascript i html]
 [interaktivnost, sučelje, mobilno]
 
-\section{Opis komunikacije između objekta}
+\section{Komponente programa}
 [renderer, camera, gpumanager, guimanager]
 [graf]
 
-\section{Redoslijed grafičkih operacija}
+\section{Postupak iscrtavanja}
 [pipeline opis]
 [graf]
 
