@@ -152,7 +152,7 @@
 
 % Za automatsko povezivanje referenci, slika i tablica koristimo hyperref
 \PassOptionsToPackage{hyphens}{url}
-\RequirePackage[pdfpagelabels,unicode=true,pdfa,hidelink,pdfstartview=]{hyperref}
+\RequirePackage[pdfpagelabels,unicode=true,pdfa,hidelinks,pdfstartview=]{hyperref}
 
 % Predefiniramo sve funkcije za tekstualne elemenate naslovnice pa zatim
 % postavljamo odabrane početne vrijednosti za HR i za EN naslovnicu.

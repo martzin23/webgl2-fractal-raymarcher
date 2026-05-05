@@ -2,10 +2,14 @@
 % Dodaj opciju upload za generiranje konačne verzije koja se učitava na FERWeb
 % Add the option upload to generate the final version which is uploaded to FERWeb
 \usepackage{blindtext}
+% \usepackage{listings}
 
 \usepackage{xcolor}
 \newcommand{\todo}[1]{{\textcolor{red}{[#1]}}}
-\usepackage{listings}
+
+\usepackage[linesnumbered, boxed, vlined]{algorithm2e}
+\renewcommand{\algorithmcfname}{Algoritam}
+\SetKwProg{Fn}{Function}{}{end}
 
 %--- PODACI O RADU / THESIS INFORMATION ----------------------------------------
 
@@ -89,70 +93,118 @@
 \section{Funkcije udaljenosti}
 Postoji više načina na koje se može zapisati neko tijelo. U računalnoj grafici se najčešće trodimenzionalni modeli opisuju mrežom trokuta. Trokuti su praktični jer imaju jednostavnu strukturu i mogu se efikasno iscrtati. Unatoč toga, postoje nedostatci takvim pristupom. Da bi se postigla zakrivljena površina, potrebno je izgraditi površinu s velikim brojem trokuta. Time površina nikad neće biti uistinu zakrivljena, nego će se sastojati od diskretnih ravnih dijelova. Neke strukture (kao na primjer spužvaste strukture) zahtijevaju toliko veliki broj trokuta da mora se napraviti kompromis brisanjem detalja strukture radi optimizacije. Detalji se općenito dodaju modelima koristeći teksture, no u tim slućajevima stvarna geometrija još uvijek ostaje pojednostavljena.
 
-Način prikaza tijela koje će se razmatrati u ovom radu jer matematički opis. Specifično, ono što ovaj rad koristi su funkcije udaljenosti (\emph{eng. Signed Distance Function, SDF}).  Oblik funkcije je sljedeći: $f(p)$. Gdje je $p$ točka u prostoru, a rezultat funkcije $f(p)$ je minimalna udaljenost te točke od površine tijela koju funkcija opisuje. Dimenzija prostora u kojem se mora nalaziti ulazna točka određuje funkcija. Slika \ref{slk:sdf} skicira vrijednosti funkcije udaljenosti pravokutnika. Crte na slici prikazuju gdje su vrijednosti funkcije jednake (mogu se zamisliti kao izohipse na topografksoj karti). Osim vraćanja vrijednost udaljenosti, drugo važno svojstvo funkcije je predznak rezultata. Vrijednost udaljenosti je pozivitna kada je točka izvan tijela (slika \ref{slk:sdf}, \todo{narančasti} dio), a negativna kada je točka unutar tijela (slika \ref{slk:sdf}, \todo{plavi} dio). S navedenim svojstvima je moguće potpuno opisati neko trodimenzionalno tijelo. Nadalje, to je i dovoljno za izgraditi prikaz tog tijela.
+Način prikaza tijela koje će se razmatrati u ovom radu jer matematički opis. Specifično, ono što ovaj rad koristi su funkcije udaljenosti (\emph{eng. Signed Distance Function, SDF}). Oblik funkcije je sljedeći: $f(p)$. Gdje je $p$ točka u prostoru, a rezultat funkcije $f(p)$ je udaljenost te točke od površine tijela koju funkcija opisuje. Dimenzija prostora u kojem se mora nalaziti ulazna točka određuje funkcija. Primjer jedne takve funkcije za opis sfere je navedena ispod u jednađbi \eqref{eq:sdf}.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.38\linewidth]{images/sdf.png}
-    \caption{Ilustracija funkcije udaljenosti \cite{sdf} \todo{bolja slika}}
-    \label{slk:sdf}
+\begin{equation}
+	\label{eq:sdf}
+	f(p)_{\text{sfera}} = |centar - p| - radius
+\end{equation}
+
+Slika \ref{slk:sdf} skicira vrijednosti funkcije udaljenosti pravokutnika. Crte na slici prikazuju gdje su vrijednosti funkcije jednake (mogu se zamisliti kao izohipse na topografksoj karti). Bijela crta označuje gdje je vrijednost udaljenosti nula, odnosno površina tijela. Osim vraćanja vrijednost udaljenosti, drugo važno svojstvo funkcije je predznak rezultata. Vrijednost je pozivitna kada je točka izvan tijela (slika \ref{slk:sdf}, narančasti dio), a negativna kada je točka unutar tijela (slika \ref{slk:sdf}, plavi dio). Koristeći navedena svojstva je moguće opisati neko trodimenzionalno tijelo. Nadalje, to je i dovoljno za izgraditi prikaz tog tijela.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.38\linewidth]{images/sdf.png}
+	\caption{Ilustracija funkcije udaljenosti \cite{sdf}}
+	\label{slk:sdf}
 \end{figure}
 
 \section{Fraktali}
-Najčešće koristimo matematički zapis za opis jednostavnih oblika kao ravnine, sfere i trokuti. Ako pokušavamo matematički opisati neki kompleksniji oblik kao na primjer zec, brzo postane očito da će to biti vrlo teško. Može se pretpostaviti da je vrlo kompleksne oblike još teže opisati formulom. No, to nije istina. Ispada da jednostavna formula može napraviti vrlo detaljan oblik, najbolji primjer toga su fraktali. Fraktali su objekti sa svojstvom samoponavljanja. Postoji uzorak (ili \emph{pattern}) koji se ponavlja po modelu, na raznim mjestima i raznim veličinama. Ponavljanje tog uzorka može ići do beskonačnosti, što znaći da je fraktal u teoriji ima beskonačno detalja. Ovdje funkcije daljine postanu vrlo korisne jer se mogu korisiti za opis fraktala. 
+Najčešće se koristi matematički zapis za opis jednostavnih oblika kao ravnine, sfere ili trokuta. Ako pokušavamo matematički opisati neki kompleksniji oblik kao na primjer zec, brzo postane očito da će to biti vrlo teško. Može se pretpostaviti da je kompleksnost formule raste s kompleksnosti oblika. No, to nije uvijek slučaj. Ispada da jednostavna formula može napraviti vrlo detaljan oblik, a najbolji primjer toga su fraktali. Fraktali su objekti sa svojstvom samoponavljanja. Odnosno, postoji uzorak (ili \emph{pattern}) koji se ponavlja po modelu, na raznim mjestima i raznim veličinama. Ponavljanje tog uzorka može ići do beskonačnosti, što znaći da je fraktal u teoriji ima beskonačno detalja. Ovdje funkcije daljine imaju koristi jer se mogu korisiti za opis fraktala.
 
-\todo{fraktal u prirodi - biljka}
+\newpage{}
 
 \section{Algoritam iscrtavanja}
-Cilj je postići prikaz fraktala. Potrebno je napraviti algoritam koji uzima opis tijela u obliku funkcije u daljenosti i iscrtava trodimenzionalni prikaz tog tijela na ekranu. Koristiti će se metoda praćenja sfere, što je podvrsta metode koračenja zrake, što je još podvrsta metode praćenja zrake. Metoda praćenja zrake (\emph{engl. Ray Tracing}) određuje boju svakog piksela pomoću zrake koja počinje u očištu kamere i prolazi kroz taj piksel. Metoda koračenja (\emph{engl. Ray Marching}) zrake koristi definiranu zraku tako da postepeno korači u smjeru zrake tijekom računanja. Praćenje sfere (\emph{engl. Sphere Tracing}) dalje definira koračenje tako da je duljina svakog koraka određena na temelju funkcije udaljenosti.
+Cilj je postići prikaz fraktala. Potreban je algoritam koji uzima opis tijela u obliku funkcije u daljenosti i iscrtava trodimenzionalni prikaz tog tijela na ekranu. Koristiti će se metoda praćenja sfere, što je podvrsta metode koračenja zrake, što je još podvrsta metode praćenja zrake. Metoda praćenja zrake (\emph{engl. Ray Tracing}) određuje boju svakog piksela pomoću zrake koja počinje u očištu kamere i prolazi kroz taj piksel. Metoda koračenja (\emph{engl. Ray Marching}) zrake koristi definiranu zraku tako da postepeno korači u smjeru zrake tijekom računanja. Praćenje sfere (\emph{engl. Sphere Tracing}) dalje definira koračenje tako da je duljina svakog koraka određena na temelju funkcije udaljenosti. Prikazivanjem svakog skoka i pripadajuće vrijednosti udaljenosti se dobiva slika sfera (ili kružnica ako se gleda u 2D prostoru), što se može vidjeti na slici \ref{slk:spheretracing}.
 
-\todo{slika}
-\todo{pseudokod}
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.38\linewidth]{images/spheretracing.jpg}
+	\caption{Koraci zrake u praćenju sfere \cite{spheretracing}}
+	\label{slk:spheretracing}
+\end{figure}
 
-\begin{lstlisting}
-testirali
-  test2 {
-    tria
-  }
-\end{lstlisting}
+Ispod je naveden pseudo-kod (Algoritam \ref{alg:spheretracing}) koji prikazuje postupak metode praćenja sfere. U svakoj iteraciji petlje se računa udaljenost pomoću funkcije udaljenosti i obavi se korak duljine te udaljenosti u smjeru zrake. Petlja završava kada je zraka dotaknula tijelo ili kada prođe granicu maksimalnog broja koraka. Mora se zadati granica koraka zbog slućaja kada zraka ne udari tijelo, nego nastavi koračiti u beskonačnost. Zbog nepreciznosti brojeva s pomičnim zarezom može doći do slučaja da zraka nikada ne dođe do udaljenosti nula od tijela. Pritom se za uvjet dodira dodaje varijabla \emph{epsilon}, koja ima vrijednost vrlo malog broja. 
+
+% \begin{lstlisting}
+% function pracenje_sfere(org, dir, max, epsilon)
+% 	// org - ishodiste zrake
+% 	// dir - smjer zrake
+% 	// max - maksimalan broj koraka
+% 	// epsilon - vrlo mali broj
+% 	pos = org
+% 	dist = +infinity
+% 	count = 0
+% 	while (dist > epsilon and count < max)
+% 		dist = sdf(pos)
+% 		pos += dir * dist
+% 		count += 1
+% 	return pos
+% \end{lstlisting}
+
+\begin{algorithm}[H]
+    \caption{Praćenje sfere}
+	\label{alg:spheretracing}
+    \Fn{pracenjeSfere(org, dir)}{
+		\tcp{org - ishodiste zrake}
+		\tcp{dir - smjer zrake}
+		\tcp{max - maksimalan broj koraka (globalna varijabla)}
+		\tcp{epsilon - vrlo mali broj (globalna varijabla)}
+		pos = org\;
+		dist = $\infty$\;
+		count = 0\;
+		\While{(dist > epsilon and count < max)}{
+			dist = sdf(pos)\;
+			pos += dir * dist\;
+			count += 1\;
+		}
+		\Return{pos}
+    }
+\end{algorithm}
 
 \chapter{Implementacija}
 \label{pog:implementacija}
 
 \section{Korišteni alati}
-\subsection{WebGL2}
-[webgl]
-[uvod, svojstva]
-[nema compute shadera]
 
-\subsection{JavaScript i HTML}
-[javascript i html]
-[interaktivnost, sučelje, mobilno]
+Primarni alat koji je korišten za ovaj rad je biblioteka WebGL2. To je varijanta popularne grafičke biblioteke OpenGL koja je prilagođena za rad na internetskom pregledniku i jeziku \emph{JavaScript}. Mogućnost korištenja grafičkih funkcija na internetskom pregledniku ima mnoge prednosti: omogućuje kompleksne vizualizacije unutar web stranica, izradu video igara koje su dostupne bez instaliravanja izvršne datoteke i generalni pristup procesorne moći grafićke kartice unutar JavaScript. WebGL2 nije sasvim identičan OpenGL, jedna bitna razlika je što ne omogućuje izradu računskih sjenčara (\emph{engl. compute shaders}). Takvi sjenčari su pogodni za iscrtavanje temeljenom zrakama kao praćenje sfera, no moguće je izvesti takvo iscrtavanje koristeći sjenčare fragmenta.
+
+Kao što je već spomenuto, programski jezik koji se koristi je JavaScript. JavaScript ima svojih prednosti što se tiće grafićkih aplikacija. Zajedno s \emph{HTML} i \emph{CSS} pruža jednostavan i fleksibilan način izrade korisničkog sučelja za upravljanje programom. Implementacija grafičkih sučelja u drugim jezicima kao C++ bi bila znatno teža i bilo bi potrebno koristiti datoteke kao na primjer Dear ImGui \cite{imgui}, što ima manju fleksibilnost u dizajnu. Dodatno, web aplikacije su orijenirane na portabilan dizajn na način da jedna stranica može raditi na više vrsta uređaja. To uključuje i ovaj projekt: prikaz fraktala se može otvoriti na mobitelu, a sučelje se prilagođava na orijentaciju i veličinu ekrana. Naravno, kvaliteta i brzina iscrtavanja će ovisiti o grafičkom procesoru uređaja na kojem se izvodi.
+
+\newpage{}
 
 \section{Komponente programa}
-[renderer, camera, gpumanager, guimanager]
-[graf]
+
+Ovo poglavlje služi za kratak opis glavnih dijelova programa. To su četiri klase, koje se zajedno sa svim ostalim klasama, nalaze u dijagramu razreda. Klasa \textbf{\emph{Renderer}} upravlja svim ostalim dijelovima: poziva inicijalizaciju scene i sučelja, učitava pohranjene postavke i upravlja komunikacijom između objekata. Zatim je klasa \textbf{\emph{GPUManager}}, koja je najkompleksnija. Stvara WebGL2 kontekst, poziva WebGL2 funkcije, upravlja sjenčarima, sinkronizira rezoluciju ekrana i definira kako će se izvršiti postupak iscrtavanja okvira (detaljnije u sljedećem poglavlju). Klasa \textbf{\emph{GUIManager}} implementira funkcionalnosti korisničkog sučelja tako da pri učitavanju stranice sagradi sučelje i aktivno ažurira uniformne varijable sjenčara kada se korisnik promijeni vrijednosti. Konačno je zadnja glavna klasa \textbf{\emph{Camera}}. Kamera služi kao kontejner informacija potrebnih za inicijalizaciju zraka i uređuje te podatke na temelju korisničkih ulaza tipkovnicom i mišem.
+
+\todo{graf}
+
+\newpage{}
 
 \section{Postupak iscrtavanja}
-[pipeline opis]
-[graf]
+
+Iscrtavanje je stvaranje slike koja se prikaže na ekranu. Za virtualne scene s ciljem prikaza u stvarnom vremenu, frekvencija iscrtavanja mora biti dovoljno velika. Radi brzine, veliki dio postupka iscrtavanja je izveden hardverski i postoji definirani grafički protočni sustav kojeg se treba pridržavati da bi se nacrtao neki 3D model. Trodimenzionalni model prvo prolazi kroz geometrijsku fazu, a zatim rastersku fazu prije popunjavanja okvira. U WebGL2 je ta struktura obavezna, odnosno nije moguće izvršiti crtanje bez pripadajueg sjenčara geometrije (\emph{engl. vertex shader}) i sjenčara fragmenata (\emph{engl. fragment shader}). U ovome slučaju, modeli koje želimo prikazati se ne sastoje od trokuta i nije potrebna geometrijska faza i bilo najbolje koristiti računske sjenčare. No, kao što je prije navedeno, WebGL2 ne omogućuje izradu računske sjenčare. Stoga je postupak iscrtavanja izveden onime što imamo.
+
+Crtanje okvira se izvodi u dva poziva na crtanje (\emph{engl. draw calls}). U svakom pozivu na crtanje se izvodi standardna grafička protočna struktura za WebGL2: sjenčar geometrije se iterira po točkama modela i sjenčar fragmenata se iterira po fragmentima. Jedini model kojeg koristimo je kvadrat (od dvoje trokuta) koji pokriva cijeli ekran. Taj model i geometrijski sjenčar se koriste za oba poziva za crtanje. Prvo iscrtavanje izvodi algoritam praćenje sfere i boji piksele. Rezultat ne ide u standardnu slikovnu prikaznu memoriju (\emph{engl. color buffer}), nego se sprema u privremeni spremnik. Privremeni spremnik ima svojeg para koji zajedno čine takozvani \emph{ping-pong buffer}.
+
+\todo{graf}
 
 \section{Korisničko sučelje}
-[vrste inputa, kontrole, mobilno]
+\todo{vrste inputa, kontrole, mobilno}
 
 \section{Prikaz funkcija udaljenosti}
 
 \subsection{Unos funkcije}
-[jezik, funkcije, errori]
-[kako radi]
+\todo{jezik, funkcije, errori}
+\todo{kako radi}
 
 \subsection{Ponuđeni fraktali}
-[mandelbox, mandelbulb, koch curve, julia bulb]
-[slike]
+\todo{mandelbox, mandelbulb, koch curve, julia bulb}
+\todo{slike}
 
 \subsection{Načini prikaza}
-[marches, normal, phong, pathtracing]
-[slike]
+\todo{marches, normal, phong, pathtracing}
+\todo{slike}
 
 \section{Web stranica i izvorni kod}
 
@@ -166,15 +218,15 @@ Aplikacija se izvodi na web pregledniku i kompatabilna je s mobilnim uređajima.
 
 \chapter{Rezultati i rasprava}
 \label{pog:rezultati_i_rasprava}
-[kvaliteta]
-[performanse]
-[slike]
+\todo{kvaliteta}
+\todo{performanse}
+\todo{slike}
 
 %--- ZAKLJUČAK / CONCLUSION ----------------------------------------------------
 
 \chapter{Zaključak}
 \label{pog:zakljucak}
-[zakljucak]
+\todo{zakljucak}
 
 %--- LITERATURA / REFERENCES ---------------------------------------------------
 
@@ -186,20 +238,20 @@ Aplikacija se izvodi na web pregledniku i kompatabilna je s mobilnim uređajima.
 
 % Sažetak na hrvatskom
 \begin{sazetak}
-  [Unesite sažetak na hrvatskom.]
+  \todo{Unesite sažetak na hrvatskom.}
 \end{sazetak}
 
 \begin{kljucnerijeci}
-  [fraktali; WebGL2; koračenje zrakom; praćenje sfera; funkcija daljine]
+  fraktali; WebGL2; koračenje zrakom; praćenje sfera; funkcija daljine
 \end{kljucnerijeci}
 
 % Abstract in English
 \begin{abstract}
-  [Enter the abstract in English.]
+  \todo{Enter the abstract in English.}
 \end{abstract}
 
 \begin{keywords}
-  [fractals; WebGL2; ray marching; sphere tracing; signed distance function]
+  fractals; WebGL2; ray marching; sphere tracing; signed distance function
 \end{keywords}
 
 %--- PRIVITCI / APPENDIX -------------------------------------------------------
