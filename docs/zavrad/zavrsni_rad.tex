@@ -146,6 +146,8 @@ Ispod je naveden pseudo-kod (Algoritam \ref{alg:spheretracing}) koji prikazuje p
 % 	return pos
 % \end{lstlisting}
 
+\todo{fix}
+
 \begin{algorithm}[H]
     \caption{Praćenje sfere}
 	\label{alg:spheretracing}
@@ -171,23 +173,22 @@ Ispod je naveden pseudo-kod (Algoritam \ref{alg:spheretracing}) koji prikazuje p
 
 \section{Korišteni alati}
 
-Primarni alat koji je korišten za ovaj rad je biblioteka \emph{WebGL2}. To je varijanta popularne grafičke biblioteke OpenGL koja je prilagođena za rad na internetskom pregledniku i jeziku \emph{JavaScript}. Mogućnost korištenja grafičkih funkcija na internetskom pregledniku ima mnoge prednosti: omogućuje kompleksne vizualizacije unutar web stranica, izradu video igara koje su dostupne bez instaliravanja izvršne datoteke i generalni pristup procesorne moći grafićke kartice unutar JavaScript. \emph{WebGL2} nije sasvim identičan OpenGL, jedna bitna razlika je što ne omogućuje izradu računskih sjenčara (\emph{engl. compute shaders}). Takvi sjenčari su pogodni za iscrtavanje temeljenom zrakama kao praćenje sfera, no moguće je izvesti takvo iscrtavanje koristeći sjenčare fragmenta.
+Primarni alat koji je korišten za ovaj rad je biblioteka \emph{WebGL2}. To je varijanta popularne grafičke biblioteke OpenGL koja je prilagođena za rad na internetskom pregledniku i jeziku \emph{JavaScript}. Mogućnost korištenja grafičkih funkcija na internetskom pregledniku ima mnoge prednosti: omogućuje grafičke vizualizacije unutar web stranica, izradu video igara koje su dostupne bez instaliravanja izvršne datoteke i generalni pristup procesorne moći grafićke kartice unutar \emph{JavaScript}. \emph{WebGL2} nije sasvim identičan OpenGL, jedna bitna razlika je što ne omogućuje izradu računskih sjenčara (\emph{engl. compute shaders}). Takvi sjenčari su pogodni za iscrtavanje temeljenom zrakama kao praćenje sfera, no moguće je izvesti takvo iscrtavanje koristeći sjenčare fragmenta.
 
 Kao što je već spomenuto, programski jezik koji se koristi je \emph{JavaScript}. \emph{JavaScript} ima svojih prednosti što se tiće grafićkih aplikacija. Zajedno s \emph{HTML} i \emph{CSS} pruža jednostavan i fleksibilan način izrade korisničkog sučelja za upravljanje programom. Implementacija grafičkih sučelja u drugim jezicima kao \emph{C++} bi bila znatno teža i bilo bi potrebno koristiti datoteke kao na primjer \emph{Dear ImGui} \cite{imgui}, što ima manju fleksibilnost u dizajnu. Dodatno, web aplikacije su orijenirane na portabilan dizajn na način da jedna stranica može raditi na više vrsta uređaja. To uključuje i ovaj projekt: prikaz fraktala se može otvoriti na mobitelu, a sučelje se prilagođava na orijentaciju i veličinu ekrana. Naravno, kvaliteta i brzina iscrtavanja će ovisiti o grafičkom procesoru uređaja na kojem se izvodi.
 
-\todo{github}
+Rezultat rada će se posluživati pomoću \emph{GitHub Pages}. To je praktično jer se \emph{Github} koristio za kontrolu verzija, pa se izvorni kod već nalazi na toj platformi. \emph{GitHub Pages} pruža statičko posluživanje, što je sasvim dovoljno za ovaj program.
 
 \newpage{}
 
 \section{Komponente programa}
 
-Ovo poglavlje služi za kratak opis glavnih dijelova programa. To su četiri klase, koje se nalaze u skraćenom dijagramu razreda na slici \ref{slk:classes}. Klasa \textbf{\emph{Renderer}} upravlja svim ostalim dijelovima: poziva inicijalizaciju scene i sučelja, učitava pohranjene postavke i upravlja komunikacijom između objekata. Zatim je klasa \textbf{\emph{GPUManager}}, koja je najkompleksnija. Stvara WebGL2 kontekst, poziva WebGL2 funkcije, upravlja sjenčarima, sinkronizira rezoluciju ekrana i definira kako će se izvršiti postupak iscrtavanja okvira (detaljnije u sljedećem poglavlju). Klasa \textbf{\emph{GUIManager}} implementira funkcionalnosti korisničkog sučelja tako da pri učitavanju stranice sagradi sučelje i aktivno ažurira uniformne varijable sjenčara kada se korisnik promijeni vrijednosti. Konačno je zadnja glavna klasa \textbf{\emph{Camera}}. Kamera služi kao kontejner informacija potrebnih za inicijalizaciju zraka i uređuje te podatke na temelju korisničkih ulaza tipkovnicom i mišem.
-
+Ovo poglavlje služi za kratak opis glavnih dijelova programa. To su četiri klase, koje se nalaze u skraćenom dijagramu razreda na slici \ref{slk:classes}. Klasa \textbf{\emph{Renderer}} upravlja svim ostalim dijelovima: poziva inicijalizaciju scene i sučelja, učitava pohranjene postavke i upravlja komunikacijom između objekata. Zatim je klasa \textbf{\emph{GPUManager}}, koja je najkompleksnija. Stvara \emph{WebGL2} kontekst, poziva \emph{WebGL2} funkcije, upravlja sjenčarima, sinkronizira rezoluciju ekrana i definira kako će se izvršiti postupak iscrtavanja okvira (detaljnije u sljedećem poglavlju). Klasa \textbf{\emph{GUIManager}} implementira funkcionalnosti korisničkog sučelja tako da pri učitavanju stranice sagradi sučelje i aktivno ažurira uniformne varijable sjenčara kada korisnik promijeni vrijednosti. Konačno je zadnja glavna klasa \textbf{\emph{Camera}}. Kamera služi kao kontejner informacija potrebnih za inicijalizaciju zraka i uoravlja tim podacima na temelju korisničkih ulaza tipkovnicom i mišem.
 
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=0.75\linewidth]{images/classes.png}
-	\caption{Skraćeni dijagram razreda}
+	\caption{Dijagram glavnih razreda}
 	\label{slk:classes}
 \end{figure}
 
@@ -195,9 +196,9 @@ Ovo poglavlje služi za kratak opis glavnih dijelova programa. To su četiri kla
 
 \section{Postupak iscrtavanja}
 
-Iscrtavanje je stvaranje slike koja se prikaže na ekranu. Za virtualne scene s ciljem prikaza u stvarnom vremenu, frekvencija iscrtavanja mora biti dovoljno velika. Radi brzine, veliki dio postupka iscrtavanja je izveden hardverski i postoji definirani grafički protočni sustav kojeg se treba pridržavati da bi se nacrtao neki 3D model. Trodimenzionalni model prvo prolazi kroz geometrijsku fazu, a zatim rastersku fazu prije popunjavanja okvira. U WebGL2 je ta struktura obavezna, odnosno nije moguće izvršiti crtanje bez pripadajueg sjenčara geometrije (\emph{engl. vertex shader}) i sjenčara fragmenata (\emph{engl. fragment shader}). U ovome slučaju, modeli koje želimo prikazati se ne sastoje od trokuta i nije potrebna geometrijska faza i bilo najbolje koristiti računske sjenčare. No, kao što je prije navedeno, WebGL2 ne omogućuje izradu računske sjenčare. Stoga je postupak iscrtavanja izveden onime što imamo.
+Iscrtavanje je stvaranje slike koja se prikaže na ekranu. Za virtualne scene s ciljem prikaza u stvarnom vremenu, frekvencija iscrtavanja mora biti dovoljno velika. Radi brzine, veliki dio postupka iscrtavanja je izveden hardverski i postoji definirani grafički protočni sustav kojeg se treba pridržavati da bi se nacrtao neki 3D model. U WebGL2 je ta struktura obavezna, odnosno nije moguće izvršiti crtanje 3D modela bez korištenja sjenčara geometrije (\emph{engl. vertex shader}) i sjenčara fragmenata (\emph{engl. fragment shader}). U ovome slučaju, modeli koje želimo prikazati se ne sastoje od trokuta i nije potrebna geometrijska faza pa bi bilo najbolje koristiti računske sjenčare. No, kao što je prije navedeno, \emph{WebGL2} ne omogućuje izradu računske sjenčare. Stoga je postupak iscrtavanja izveden onime što imamo.
 
-Crtanje jednog okvira se izvodi u dva poziva na crtanje (\emph{engl. draw calls}). U svakom pozivu na crtanje se izvodi standardna grafička protočna struktura za WebGL2: sjenčar geometrije se iterira po točkama modela i sjenčar fragmenata se iterira po fragmentima. Jedini model koji se koristi je kvadrat (dvoje trokuta) koji pokriva cijeli ekran. Taj model i geometrijski sjenčar se koriste za oba poziva za crtanje. Prvo iscrtavanje izvodi algoritam praćenje sfere, obavi sjenčanje, uzima u obzir boju prošlog okvira i rezultat se sprema u privremeni spremnik. Nije moguće iz jednog spremnika čitati i pisati u ist vrijeme, stoga je napravljeni par spremnika koji zajedno čine \emph{ping-pong buffer}. Jedan spremnik služi za čitanje, a drugi za pisanje. Nakon svakog iscrtavanja se uloga tih spremnika zamijeni. Potrebno je imati informacije o prošlom okviru jer se koristi \emph{anti-aliasing} metoda preko akumulacijskog spremnika. U drugom pozivu na crtanje se uzima slika u međuspremniku, podesi se boja i iscrta se u prikaznu memoriju za ekran. Prednost korištenja dvoje poziva na crtanje je to što prvi poziv može biti obavljen u manjoj rezoluciji, a drugi poziv skalira rezultat u rezoluciju koja je potrebna za ekran.
+\todo{Crtanje jednog okvira se izvodi u dva poziva na crtanje (\emph{engl. draw calls}). U svakom pozivu na crtanje se izvodi standardna grafička protočna struktura za \emph{WebGL2}: sjenčar geometrije se iterira po točkama modela i sjenčar fragmenata se iterira po fragmentima. Jedini model koji se koristi je kvadrat (dvoje trokuta) koji pokriva cijeli ekran. Taj model i geometrijski sjenčar se koriste za oba poziva za crtanje. Prvo iscrtavanje izvodi algoritam praćenje sfere, obavi sjenčanje, uzima u obzir boju prošlog okvira i rezultat se sprema u privremeni spremnik. Nije moguće iz jednog spremnika čitati i pisati u ist vrijeme, stoga je napravljeni par spremnika koji zajedno čine \emph{ping-pong buffer}. Jedan spremnik služi za čitanje, a drugi za pisanje. Nakon svakog iscrtavanja se uloga tih spremnika zamijeni. Potrebno je imati informacije o prošlom okviru jer se koristi \emph{anti-aliasing} metoda preko akumulacijskog spremnika. U drugom pozivu na crtanje se uzima slika u međuspremniku, podesi se boja i iscrta se u prikaznu memoriju za ekran. Prednost korištenja dvoje poziva na crtanje je to što prvi poziv može biti obavljen u manjoj rezoluciji, a drugi poziv skalira rezultat u rezoluciju koja je potrebna za ekran.}
 
 \newpage{}
 
@@ -212,9 +213,11 @@ Crtanje jednog okvira se izvodi u dva poziva na crtanje (\emph{engl. draw calls}
 
 \section{Korisničko sučelje}
 
-Dizajn korisničkog sučelja je napravljen koristeći standardnih HTML elementa i CSS pravila, a funkcionalnost sučelja je ostvarena u JavaScript. Cilj sučelja je bilo omogućiti pristup što većem broju varijabla. Uz kretanje kroz virtualni prostor, ostvarena je mogućnost podešavanja načina prikaza i čak mijenjanje funkcija daljine koje se prikazuju. Tekst sučelja je na engleskom jeziku. Upravljanje varijablama je ostvareno raznim kontrolama kao gumbovi slajderi, unos brojeva, itd. Većinu elemenata imaju kratak opis koji se pojavi ako se kratko vrijeme ostavi miš iznad njih. Slike ispod su korisničko sučelje na stolnom računalu (slika \ref{slk:desktop}) i na mobilnom uređaju (slika \ref{slk:mobile}).
+Dizajn korisničkog sučelja je napravljen koristeći standardnih \emph{HTML} elementa i \emph{CSS} pravila, a funkcionalnost sučelja je ostvarena u \emph{JavaScript}. Cilj sučelja je bilo omogućiti korisniku pristup što većem broju varijabla. Uz kretanje kroz virtualni prostor, ostvarena je mogućnost podešavanja načina prikaza i čak mijenjanje funkcija daljine koje se prikazuju. Tekst sučelja je na engleskom jeziku. Upravljanje varijablama je ostvareno raznim kontrolama kao gumbovi, slajderi, unos brojeva, itd. Većinu elemenata imaj kratak opis koji se pojavi ako se kratko vrijeme ostavi miš iznad njih. Slike ispod su korisničko sučelje na stolnom računalu (slika \ref{slk:desktop}) i na mobilnom uređaju (slika \ref{slk:mobile}). 
 
-Sučelje je podijeljeno u četiri kartice: generalne postavke, postavke vezane uz praćenje sfere, unos funkcije daljine i informacije o kontrolama. U kartici za informacije o kontrolama jer samo tekstualni opis gumba na tipkovnici i njihovih pripadajućih funkcionalnosti. Generalne postavke uključuju porešavanje kamere, rezolucije i slikanje ekrana. Postavke za praćenje sfere su više tehničke, imaju najveći utjecaj na brzinu iscrtavanja i mogu upravljati oblikom tijela. Konačno, u zadnjoj kartici se može unijeti funkcija daljine. Postoje kratke naputnice za izradu funkcija i jedan primjer koda. 
+Sučelje je podijeljeno u četiri kartice: generalne postavke, postavke vezane uz praćenje sfere, unos funkcije daljine i informacije o kontrolama. U kartici za informacije o kontrolama jer samo tekstualni opis gumbova na tipkovnici i njihovih pripadajućih funkcionalnosti. Generalne postavke uključuju podešavanje kamere, rezolucije i slikanje ekrana. Postavke za praćenje sfere su više tehničke, imaju najveći utjecaj na brzinu iscrtavanja i mogu upravljati oblikom tijela. Konačno, u zadnjoj kartici se može unijeti funkcija daljine. Postoje kratke naputnice za izradu funkcija i jedan primjer koda.
+
+\newpage{}
 
 \begin{figure}[htb]
 	\centering
@@ -223,9 +226,10 @@ Sučelje je podijeljeno u četiri kartice: generalne postavke, postavke vezane u
 	\label{slk:desktop}
 \end{figure}
 
+
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.38\linewidth]{images/mobile.png}
+	\includegraphics[width=0.30\linewidth]{images/mobile.png}
 	\caption{Korisničko sučelje na mobilnom uređaju}
 	\label{slk:mobile}
 \end{figure}
@@ -234,21 +238,21 @@ Sučelje je podijeljeno u četiri kartice: generalne postavke, postavke vezane u
 
 \section{Prikaz funkcija udaljenosti}
 
+\todo{pomaknuti algoritam ovdje?}
+
 \subsection{Unos funkcije}
 
-Funkcija daljine se unosi u tekstualni okvir u obliku izvornog programskog koda jezika \emph{GLSL}. \emph{GLSL} je progmramski jezik za sjenčare kojeg koristi \emph{WebGL2}. Funkcija daljine može koristiti druge funkcije u izvornom kodu koji se unese. Nakon unosa se treba kliknuti gumb za kompajliranje koda. Prvo se izbriše postojeći program koji \emph{WebGL2} koristi za iscrtavanje, zatim se uneseni izvorni kod u obliku teksta spoji zajedno s izvornim kodom ostatka sjenčara fragmenta. Konačno se novi spojeni izvorni kod pošalje grafičkoj kartici, kompajlira se i stvori se novi program za iscrtavanje. Ako dođe do greške pri kompajliranju (kao na primjer sintaksna greška unesenog koda), funkcija daljine će se zamijeniti zadanom defaultnom funkcijom i ispisati će se poruka koja daje informaciju o greški radi jednostavnijeg popravljanja koda.
+Funkcija daljine se unosi u tekstualni okvir u obliku izvornog programskog koda jezika \emph{GLSL}. \emph{GLSL} je progmramski jezik za sjenčare kojeg koristi \emph{WebGL2}. Nakon unosa se treba kliknuti gumb za kompajliranje da bi se primijenio kod. Prvo se izbriše postojeći program koji \emph{WebGL2} koristi za iscrtavanje, zatim se uneseni izvorni kod u obliku teksta spoji zajedno s izvornim kodom ostatka sjenčara fragmenta. Konačno se novi spojeni izvorni kod pošalje grafičkoj kartici, kompajlira se i stvori se novi program za iscrtavanje. Ako dođe do greške pri kompajliranju (kao na primjer sintaksna greška unesenog koda), funkcija daljine će se zamijeniti zadanom defaultnom funkcijom i ispisati će se poruka koja daje informaciju o greški radi jednostavnijeg popravljanja koda. \todo{referencirati kod}
 
 \newpage{}
 
-\begin{lstlisting}[language=C, caption=Example Python Code, frame=tb]
+% \begin{lstlisting}[language=C, caption=Example Python Code, frame=tb]
+\begin{lstlisting}
 	float SDF(vec3 p) {
 		float radius = uniforms.custom_b;
 		return length(p) - radius;
 	}
 \end{lstlisting}
-
-\todo{jezik, funkcije, errori}
-\todo{kako radi}
 
 \subsection{Ponuđeni fraktali}
 \todo{mandelbox, mandelbulb, koch curve, julia bulb}
