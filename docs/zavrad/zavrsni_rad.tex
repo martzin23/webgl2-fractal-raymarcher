@@ -2,7 +2,13 @@
 % Dodaj opciju upload za generiranje konačne verzije koja se učitava na FERWeb
 % Add the option upload to generate the final version which is uploaded to FERWeb
 \usepackage{blindtext}
+
 \usepackage{listings}
+\lstset{
+    basicstyle=\ttfamily\small\linespread{0.9}\selectfont,
+    lineskip=-0.5pt,
+	frame=single
+}
 
 \usepackage{xcolor}
 \newcommand{\todo}[1]{{\textcolor{red}{[#1]}}}
@@ -112,9 +118,18 @@ Slika \ref{slk:sdf} skicira vrijednosti funkcije udaljenosti pravokutnika. Crte 
 \end{figure}
 
 \section{Fraktali}
-Najčešće se koristi matematički zapis za opis jednostavnih oblika kao ravnine, sfere ili trokuta. Ako pokušavamo matematički opisati neki kompleksniji oblik kao na primjer zec, brzo postane očito da će to biti vrlo teško. Može se pretpostaviti da je kompleksnost formule raste s kompleksnosti oblika. No, to nije uvijek slučaj. Ispada da jednostavna formula može napraviti vrlo detaljan oblik, a najbolji primjer toga su fraktali. Fraktali su objekti sa svojstvom samoponavljanja. Odnosno, postoji uzorak (ili \emph{pattern}) koji se ponavlja po modelu, na raznim mjestima i raznim veličinama. Ponavljanje tog uzorka može ići do beskonačnosti, što znaći da je fraktal u teoriji ima beskonačno detalja. Ovdje funkcije daljine imaju koristi jer se mogu korisiti za opis fraktala.
+Najčešće se koristi matematički zapis za opis jednostavnih oblika kao ravnine, sfere ili trokuta. Ako pokušavamo matematički opisati neki kompleksniji oblik kao na primjer zec, postane očito da će to biti teško. Može se pretpostaviti da je kompleksnost formule raste s kompleksnosti oblika. No, to nije uvijek slučaj. Ispada da jednostavna formula može napraviti vrlo detaljan oblik, a najbolji primjer toga su fraktali. Fraktali su objekti sa svojstvom samoponavljanja. Odnosno, postoji uzorak (ili \emph{pattern}) koji se ponavlja po modelu, na raznim mjestima i raznim veličinama. Ponavljanje tog uzorka može ići do beskonačnosti, što znaći da je fraktal u teoriji ima beskonačno detalja. Ovdje se funkcije daljine mogu korisiti za opis fraktala.
+
+Dobivanje kompleksnog oblika iz jednostavnih pravila.
 
 \todo{priroda}
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.38\linewidth]{images/fern.jpg}
+	\caption{Fraktalna struktura lista paprata \cite{fern}}
+	\label{slk:fern}
+\end{figure}
 
 \newpage{}
 
@@ -123,50 +138,28 @@ Cilj je postići prikaz fraktala. Potreban je algoritam koji uzima opis tijela u
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.38\linewidth]{images/spheretracing.jpg}
-	\caption{Koraci zrake u praćenju sfere \cite{spheretracing}}
+	\includegraphics[width=0.38\linewidth]{images/spheretracing.png}
+	\caption{Koraci zrake u praćenju sfere}
 	\label{slk:spheretracing}
 \end{figure}
 
 Ispod je naveden pseudo-kod (Algoritam \ref{alg:spheretracing}) koji prikazuje postupak metode praćenja sfere. U svakoj iteraciji petlje se računa udaljenost pomoću funkcije udaljenosti i obavi se korak duljine te udaljenosti u smjeru zrake. Petlja završava kada je zraka dotaknula tijelo ili kada prođe granicu maksimalnog broja koraka. Mora se zadati granica koraka zbog slućaja kada zraka ne udari tijelo, nego nastavi koračiti u beskonačnost. Zbog nepreciznosti brojeva s pomičnim zarezom može doći do slučaja da zraka nikada ne dođe do udaljenosti nula od tijela. Pritom se za uvjet dodira dodaje varijabla \emph{epsilon}, koja ima vrijednost vrlo malog broja. 
 
-% \begin{lstlisting}
-% function pracenje_sfere(org, dir, max, epsilon)
-% 	// org - ishodiste zrake
-% 	// dir - smjer zrake
-% 	// max - maksimalan broj koraka
-% 	// epsilon - vrlo mali broj
-% 	pos = org
-% 	dist = +infinity
-% 	count = 0
-% 	while (dist > epsilon and count < max)
-% 		dist = sdf(pos)
-% 		pos += dir * dist
-% 		count += 1
-% 	return pos
-% \end{lstlisting}
-
-\todo{fix}
-
-\begin{algorithm}[H]
-    \caption{Praćenje sfere}
-	\label{alg:spheretracing}
-    \Fn{pracenjeSfere(org, dir)}{
-		\tcp{org - ishodiste zrake}
-		\tcp{dir - smjer zrake}
-		\tcp{max - maksimalan broj koraka (globalna varijabla)}
-		\tcp{epsilon - vrlo mali broj (globalna varijabla)}
-		pos = org\;
-		dist = $\infty$\;
-		count = 0\;
-		\While{(dist > epsilon and count < max)}{
-			dist = sdf(pos)\;
-			pos += dir * dist\;
-			count += 1\;
-		}
-		\Return{pos}
-    }
-\end{algorithm}
+\begin{lstlisting}[caption=test, label=alg:spheretracing]
+function pracenje_sfere(org, dir, max, epsilon)
+	// org - ishodiste zrake
+	// dir - smjer zrake
+	// max - maksimalan broj koraka
+	// epsilon - vrlo mali broj
+	pos = org
+	dist = +infinity
+	count = 0
+	while (dist > epsilon and count < max)
+		dist = sdf(pos)
+		pos += dir * dist
+		count += 1
+	return pos
+\end{lstlisting}
 
 \chapter{Implementacija}
 \label{pog:implementacija}
@@ -187,7 +180,7 @@ Ovo poglavlje služi za kratak opis glavnih dijelova programa. To su četiri kla
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.75\linewidth]{images/classes.png}
+	\includegraphics[width=0.5\linewidth]{images/classes.png}
 	\caption{Dijagram glavnih razreda}
 	\label{slk:classes}
 \end{figure}
@@ -204,7 +197,7 @@ Iscrtavanje je stvaranje slike koja se prikaže na ekranu. Za virtualne scene s 
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.75\linewidth]{images/pipeline.png}
+	\includegraphics[width=0.5\linewidth]{images/pipeline.png}
 	\caption{Dijagram postupka iscrtavanja}
 	\label{slk:pipeline}
 \end{figure}
@@ -221,18 +214,24 @@ Sučelje je podijeljeno u četiri kartice: generalne postavke, postavke vezane u
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.75\linewidth]{images/desktop.png}
+	\includegraphics[width=1\linewidth]{images/ui.png}
 	\caption{Korisničko sučelje na stolnom računalu}
 	\label{slk:desktop}
 \end{figure}
 
+% \begin{figure}[htb]
+% 	\centering
+% 	\includegraphics[width=0.75\linewidth]{images/desktop.png}
+% 	\caption{Korisničko sučelje na stolnom računalu}
+% 	\label{slk:desktop}
+% \end{figure}
 
-\begin{figure}[htb]
-	\centering
-	\includegraphics[width=0.30\linewidth]{images/mobile.png}
-	\caption{Korisničko sučelje na mobilnom uređaju}
-	\label{slk:mobile}
-\end{figure}
+% \begin{figure}[htb]
+% 	\centering
+% 	\includegraphics[width=0.30\linewidth]{images/mobile.png}
+% 	\caption{Korisničko sučelje na mobilnom uređaju}
+% 	\label{slk:mobile}
+% \end{figure}
 
 \newpage{}
 
