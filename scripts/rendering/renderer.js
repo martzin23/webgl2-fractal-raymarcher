@@ -44,6 +44,7 @@ class Renderer {
     render() {
         this.gpu.render();
         this.gpu.uniforms.temporal_counter += 1;
+        this.gpu.uniforms.frame_counter += 1;
     }
 }
 

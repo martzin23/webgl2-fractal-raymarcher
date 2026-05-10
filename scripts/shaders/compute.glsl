@@ -35,6 +35,7 @@ layout(std140) uniform UniformBlock {
     float custom_e;
 
     float antialiasing_strength;
+    float frame_counter;
 } uniforms;
 struct Ray {
     vec3 origin;
@@ -55,7 +56,7 @@ out vec4 output_color;
 vec3 pathTrace(Ray camera_ray, inout uint seed);
 Data rayMarch(Ray ray);
 void focusBlur(inout Ray ray, inout uint seed, const float dist, const float strength);
-vec3 derivateNormal(vec3 position, float epsilon);
+vec3 deriveNormal(vec3 position, float epsilon);
 vec3 skyValue(vec3 direction);
 float randomUniform(inout uint seed);
 float randomNormal(inout uint seed);
@@ -79,7 +80,7 @@ void main() {
         Data data = rayMarch(camera_ray);
         float factor = 1.0 - (float(data.marches) / uniforms.max_marches);
         if (data.collided) {
-            pixel_color = vec3(((data.normal * 2.0 + 1.0) * 0.5 + 0.5) * factor);
+            pixel_color = vec3((data.normal * 0.5 + 0.5) * factor);
         } else {
             pixel_color = vec3(0.0);
         }
@@ -115,34 +116,46 @@ void main() {
 
 vec3 pathTrace(Ray camera_ray, inout uint seed) {
     Ray ray = camera_ray;
-    vec3 sample_color = vec3(0.0);
-    vec3 ray_color = vec3(1.0);
-
     for (int bounce_counter = 0; bounce_counter < int(uniforms.max_bounces); bounce_counter++) {
         Data data = rayMarch(ray);
 
-        if (!data.collided) {
-            if (data.dist > 10.0 || bounce_counter == 0) {
-                vec3 sky = skyValue(ray.direction);
-                sample_color += sky * ray_color;
-            }
-            else {
-                sample_color += 0.0 * ray_color;
-            }
-            break;
-        }
-        
+        if (!data.collided && data.dist > 10.0)
+            return skyValue(ray.direction);
+
         ray.direction = normalize(randomDirection(seed) + data.normal);
         ray.origin = data.position + ray.direction * uniforms.epsilon;
-        
-        vec3 color = vec3(1.0);
-        // vec3 color = -data.normal * 0.25 + 0.75;
-        vec3 emission = vec3(0.0);
-        sample_color += emission * color * ray_color;
-        ray_color *= color;
     }
+    return vec3(0.0);
 
-    return sample_color;
+    // Ray ray = camera_ray;
+    // vec3 sample_color = vec3(0.0);
+    // vec3 ray_color = vec3(1.0);
+
+    // for (int bounce_counter = 0; bounce_counter < int(uniforms.max_bounces); bounce_counter++) {
+    //     Data data = rayMarch(ray);
+
+    //     if (!data.collided) {
+    //         if (data.dist > 10.0 || bounce_counter == 0) {
+    //             vec3 sky = skyValue(ray.direction);
+    //             sample_color += sky * ray_color;
+    //         }
+    //         else {
+    //             sample_color += 0.0 * ray_color;
+    //         }
+    //         break;
+    //     }
+        
+    //     ray.direction = normalize(randomDirection(seed) + data.normal);
+    //     ray.origin = data.position + ray.direction * uniforms.epsilon;
+        
+    //     vec3 color = vec3(1.0);
+    //     // vec3 color = -data.normal * 0.25 + 0.75;
+    //     vec3 emission = vec3(0.0);
+    //     sample_color += emission * color * ray_color;
+    //     ray_color *= color;
+    // }
+
+    // return sample_color;
 }
 
 Data rayMarch(Ray ray) {
@@ -160,12 +173,12 @@ Data rayMarch(Ray ray) {
         data.position += d * ray.direction;
     }
 
-    data.normal = derivateNormal(data.position, uniforms.normals_precision);
+    data.normal = deriveNormal(data.position, uniforms.normals_precision);
     data.dist = length(data.position - ray.origin); 
     return data;
 }
 
-vec3 derivateNormal(vec3 position, float epsilon) {
+vec3 deriveNormal(vec3 position, float epsilon) {
     vec3 normal;
 	normal.x = (SDF(position + vec3(epsilon, 0.0, 0.0)) - SDF(position - vec3(epsilon, 0.0, 0.0)));
 	normal.y = (SDF(position + vec3(0.0, epsilon, 0.0)) - SDF(position - vec3(0.0, epsilon, 0.0)));

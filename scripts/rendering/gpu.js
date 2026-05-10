@@ -64,8 +64,8 @@ export default class GPUManager {
             normals_precision: 0.0001,
 
             detail: 10,
-            sun_intensity: 100.0,
-            sky_intensity: 0.5,
+            sun_intensity: 50.0,
+            sky_intensity: 2.0,
             custom_a: -2.0,
 
             custom_b: 1.0,
@@ -74,7 +74,7 @@ export default class GPUManager {
             custom_e: 2.0,
 
             antialiasing_strength: 0.0005,
-            padding_a: 0.0,
+            frame_counter: 0.0,
             padding_b: 0.0,
             padding_c: 0.0,
         };
