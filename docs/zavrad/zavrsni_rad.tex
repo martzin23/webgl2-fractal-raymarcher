@@ -5,9 +5,10 @@
 
 \usepackage{listings}
 \lstset{
-    basicstyle=\ttfamily\small\linespread{0.9}\selectfont,
+    basicstyle=\ttfamily\footnotesize\linespread{0.9}\selectfont,
     lineskip=-0.5pt,
-	frame=single
+	frame=single,
+    breaklines=true,
 }
 \renewcommand{\lstlistingname}{Algoritam}
 
@@ -148,6 +149,8 @@ Cilj je postići prikaz fraktala. Potreban je algoritam koji uzima opis tijela u
 
 Ispod je naveden pseudo kôd (Algoritam \ref{alg:spheretracing}) koji prikazuje postupak metode praćenja sfere. U svakoj iteraciji petlje se računa udaljenost pomoću funkcije udaljenosti i obavi se korak duljine te udaljenosti u smjeru zrake. Petlja završava kada je zraka dotaknula tijelo ili kada prođe granicu maksimalnog broja koraka. Mora se zadati granica koraka zbog slućaja kada zraka ne udari tijelo, nego nastavi koračiti u beskonačnost. Zbog nepreciznosti brojeva s pomičnim zarezom može doći do slučaja da zraka nikada ne dođe do udaljenosti nula od tijela. Pritom se za uvjet dodira dodaje varijabla \emph{epsilon}, koja ima vrijednost vrlo malog broja. 
 
+\newpage{}
+
 \begin{lstlisting}[caption=Algoritam praćenja sfere, label=alg:spheretracing]
 pracenje_sfere(org, dir, max, epsilon) {
 	// org - ishodiste zrake
@@ -258,13 +261,13 @@ Sučelje nudi odabir funkcije udaljenosti koja se prikazuje. Prvi odabir je \emp
         \begin{minipage}{0.25\textwidth}
             \centering
             \includegraphics[width=\linewidth]{images/mandelbox.png}
-            \captionof{figure}{Mandelbox}
+            \captionof{figure}{\emph{Mandelbox}}
             \label{slk:mandelbox}
         \end{minipage} &
         \begin{minipage}{0.25\textwidth}
             \centering
             \includegraphics[width=\linewidth]{images/mandelbulb.png}
-            \captionof{figure}{Mandelbulb}
+            \captionof{figure}{\emph{Mandelbulb}}
             \label{slk:mandelbulb}
         \end{minipage} \\
         \begin{minipage}{0.25\textwidth}
@@ -276,7 +279,7 @@ Sučelje nudi odabir funkcije udaljenosti koja se prikazuje. Prvi odabir je \emp
         \begin{minipage}{0.25\textwidth}
             \centering
             \includegraphics[width=\linewidth]{images/juliabulb.png}
-            \captionof{figure}{Juliabulb}
+            \captionof{figure}{\emph{Juliabulb}}
             \label{slk:juliabulb}
         \end{minipage}
     \end{tabular}
@@ -313,7 +316,7 @@ Za svakog od fraktala je moguće mijenjati nekoliko njegovih parametra. Slika \r
 
 \subsection{Broj koraka}
 
-Prvi naćin prikaza objekata je temeljen na boju koraka kojih zraka napravi prije nego dotakne površinu. Broj koraka se preslikava na boju linearno: $[0,max] \gets [1,0]$, odnosno ako je broj koraka nula, boja piksela je bijela i ako je broj koraka došao do maksimuma, onda je boja crna. To rezultira  
+Prvi naćin prikaza objekata je temeljen na boju koraka kojih zraka napravi prije nego dotakne površinu. Broj koraka se preslikava na slijedeći način: ako je broj koraka nula, boja piksela je bijela, a ako je broj koraka došao do maksimuma, onda je boja crna. Sve između je linearno interpolirano (Algoritam \ref{alg:marches}). Ovaj način iskorištava svojstvo algoritma gdje zrake koje prolaze blizu tijela izvedu više koraka (usporedba je demonstrirana na slikama \ref{slk:ao1} i \ref{slk:ao2}). Konačna slika (\ref{slk:marches}) istovremeno iskazuje dojam dubine i mjesta gdje ima najviše detalja.
 
 \begin{figure}[htbp]
     \centering
@@ -327,7 +330,7 @@ Prvi naćin prikaza objekata je temeljen na boju koraka kojih zraka napravi prij
         \begin{minipage}{0.38\textwidth}
             \centering
             \includegraphics[width=\linewidth]{images/ao2.png}
-            \captionof{figure}{Zraka koja prolazi blizu površine tijela}
+            \captionof{figure}{Zraka koja prolazi blizu površine tijela, a ne dotagne ga}
             \label{slk:ao2}
         \end{minipage} 
     \end{tabular}
@@ -340,47 +343,132 @@ Prvi naćin prikaza objekata je temeljen na boju koraka kojih zraka napravi prij
     \label{slk:marches}
 \end{figure}
 
+\begin{lstlisting}[caption=Isječak koda za način prikaza brojem koraka zrake, label=alg:marches]
+void main() {
+    ...
+    // rayMarch() - implementacija algoritma pracenja sfere
+    // Data - kontejner informacija koje su izracunate algoritmom
+    // data.marches - broj koraka zrake
+    // data.collided - je li zraka dotaknula nesto
+    Data data = rayMarch(camera_ray);
+    float factor = 1.0 - (float(data.marches) / uniforms.max_marches);
+    pixel_color = vec3(mix(0.0, factor, float(data.collided)));
+    ...
+}
+\end{lstlisting}
+
+\newpage{}
+
 \subsection{Normale}
 
-\todo{normal code}
+Drugi naćin prikaza služi za prikaz vrijednosti normale (slika \ref{slk:normals}). Normala je jedinični vektor koji je usmjeren gdje površina gleda. Vrijednost normale se može izračunati derivacije funkcije udaljenosti za svaku os zasebno. 
+
+\begin{figure}[htb]
+	\centering
+    \includegraphics[width=0.38\linewidth]{images/normals.png}
+    \caption{Prikaz temeljen na vektoru normale površine}
+    \label{slk:normals}
+\end{figure}
+
+Za aproksimaciju derivacije funkcije koristi se metoda središnjih razlika (\emph{engl. central difference method}, formula \ref{eq:cdm}). Funkcija se mora evaluirati dva puta za svaku os i koristi se proizvoljan vrlo mali broj. Implementacija izračuna normale u točki zajedno s kodom za izračun boje je u algoritmu \ref{alg:normals} .
+
+\begin{equation}
+	\label{eq:cdm}
+	f'(x) \approx \frac{f(x+\Delta x)-f(x-\Delta x)}{2 \Delta x}
+\end{equation}
+
+\begin{lstlisting}[caption=Isječak koda za način prikaza normala, label=alg:normals]
+vec3 deriveNormal(vec3 position, float epsilon) {
+    vec3 normal;
+	normal.x = (SDF(position + vec3(epsilon, 0.0, 0.0)) - SDF(position - vec3(epsilon, 0.0, 0.0)));
+	normal.y = (SDF(position + vec3(0.0, epsilon, 0.0)) - SDF(position - vec3(0.0, epsilon, 0.0)));
+	normal.z = (SDF(position + vec3(0.0, 0.0, epsilon)) - SDF(position - vec3(0.0, 0.0, epsilon)));
+    return normalize(normal  / (2.0 * epsilon));
+}
+
+void main() {
+    ...
+    // data.normal - vektor normale u tocki u kojoj je zraka zavrsila, koristi funkciju deriveNormal()
+    Data data = rayMarch(camera_ray);
+    float factor = 1.0 - (float(data.marches) / uniforms.max_marches);
+    if (data.collided)
+        pixel_color = vec3(((data.normal * 2.0 + 1.0) * 0.5 + 0.5) * factor);
+    else
+        pixel_color = vec3(0.0);
+    ...
+}
+\end{lstlisting}
+
+\newpage{}
 
 \subsection{Phongovo osvjetljenje}
 
-\todo{phong code}
+Treći način prikaza je lokalno osvjetljenje ostvareno s Phongovim modelom. Difuzna komponenta phongovog modela koristi samo bijelu boju za površinu, a ambijentalna komponenta je jednaka nuli (postoji samo jedan izvor svijetlosti: sunce). Uz lokalni model se prikazuje oštra sijena. Sijena je ostvarena slanjem zrake od točke na površini prema izvoru svjetlosti i provjerom ako je zraka udarila nešto na putu (slika \ref{slk:phong} i implementacija \ref{alg:phong}). 
+
+\begin{figure}[htb]
+	\centering
+    \includegraphics[width=0.38\linewidth]{images/phong.png}
+    \caption{Prikaz s lokalnim osvjetljenjem i sjenama}
+    \label{slk:phong}
+\end{figure}
+
+\begin{lstlisting}[caption=Isječak koda za implementaciju lokalnog osvjetljenja i sjena, label=alg:phong]
+void main() {
+    ...
+    Data camera_data = rayMarch(camera_ray);
+    float diffuse = clamp(dot(camera_data.normal, uniforms.sun_direction), 0.0, 1.0);
+    float specular = clamp(pow(dot(camera_data.normal, uniforms.sun_direction), 50.0), 0.0, 1.0);
+
+    Ray shadow_ray;
+    shadow_ray.direction = uniforms.sun_direction;
+    shadow_ray.origin = camera_data.position + camera_data.normal * uniforms.epsilon;
+
+    Data shadow_data = rayMarch(shadow_ray);
+    float shadow = float(shadow_data.dist > 100.0);
+
+    if (camera_data.collided)
+        pixel_color = vec3((diffuse + specular) * shadow);
+    else
+        pixel_color = vec3(0.0);
+    ...
+}
+\end{lstlisting}
+
+\newpage{}
 
 \subsection{Praćenje zrake}
 
-\todo{pathtracing code}
+Zadnji i četvrti način prikaza je globalno osvjetljenje (slika \ref{slk:pathtraced}). Koristi se pojednostavljena metoda praćenja zrake zajedno s \emph{ping-pong} spremnikom. Kada zraka dođe do površine, odbije u nasumičnom smjeru i nastavi se odbijati dok ne prijeđe maksimalan broj odbijanja (rezultat je crna boja) ili otiđe u nebo (rezultat je boja neba u tom smjeru) (algoritam \ref{alg:pathtraced}). Konačni rezultat je prosijek svih boja koje su dobivene za dani piksel. Pošto je ovaj postupak računski intenzivan, zbog responzivnosti i optimizacije je prosijek računan između prošlog i trenutnog okvira koji se iscrtava. Time treba manje vremena za izračun pojedinog okvira, a slika se postepeno razvija u bolji razultat što se duže kamere a ne kreće.
 
-\begin{figure}[htbp]
-    \centering
-    \begin{tabular}{cc}
-        \begin{minipage}{0.4\textwidth}
-            \centering
-            \includegraphics[width=\linewidth]{images/marches.png}
-            \captionof{figure}{Prikaz temeljen na broju koraka zrake}
-            \label{slk:marches2}
-        \end{minipage} &
-        \begin{minipage}{0.4\textwidth}
-            \centering
-            \includegraphics[width=\linewidth]{images/normals.png}
-            \captionof{figure}{Prikaz temeljen na vektoru normale površine}
-            \label{slk:normals2}
-        \end{minipage} \\
-        \begin{minipage}{0.4\textwidth}
-            \centering
-            \includegraphics[width=\linewidth]{images/phong.png}
-            \captionof{figure}{Prikaz s lokalnim osvjetljenjem i sjenama}
-            \label{slk:phong2}
-        \end{minipage} &
-        \begin{minipage}{0.4\textwidth}
-            \centering
-            \includegraphics[width=\linewidth]{images/pathtraced.png}
-            \captionof{figure}{Prikaz s globalnim osvjetljenjem}
-            \label{slk:pathtraced2}
-        \end{minipage}
-    \end{tabular}
+\begin{figure}[htb]
+	\centering
+    \includegraphics[width=0.38\linewidth]{images/pathtraced.png}
+    \caption{Prikaz s globalnim osvjetljenjem}
+    \label{slk:pathtraced}
 \end{figure}
+
+\begin{lstlisting}[caption=Isječak koda za implementaciju globalnog osvjetljenja, label=alg:pathtraced]
+vec3 pathTrace(Ray camera_ray, inout uint seed) {
+    Ray ray = camera_ray;
+    for (int bounce_counter = 0; bounce_counter < int(uniforms.max_bounces); bounce_counter++) {
+        Data data = rayMarch(ray);
+        
+        if (!data.collided && data.dist > 10.0)
+            return skyValue(ray.direction);
+
+        ray.direction = normalize(randomDirection(seed) + data.normal);
+        ray.origin = data.position + ray.direction * uniforms.epsilon;
+    }
+    return vec3(0.0);
+}
+
+void main() {
+    ...
+    pixel_color = pathTrace(camera_ray, seed);
+    output_color = vec4(previous_color.xyz * ((uniforms.temporal_counter - 1.0) / uniforms.temporal_counter) + pixel_color * (1.0 / uniforms.temporal_counter), 1.0);
+    ...
+}
+\end{lstlisting}
 
 \newpage{}
 
@@ -400,13 +488,17 @@ Aplikacija se izvodi na web pregledniku i kompatabilna je s mobilnim uređajima.
 
 \todo{korisni su nacini prikaza, }
 
+\section{Mjerenje performansi}
 \todo{usporedba performanse komp mob lap}
 
-\todo{slike}
-
+\section{Najteži dijelovi}
 \todo{najtezi dijelovi}
 
+\section{Moguća poboljšanja}
 \todo{poboljsanja}
+
+\section{Slike}
+\todo{slike}
 
 %--- ZAKLJUČAK / CONCLUSION ----------------------------------------------------
 
@@ -426,10 +518,12 @@ Aplikacija se izvodi na web pregledniku i kompatabilna je s mobilnim uređajima.
 % Sažetak na hrvatskom
 \begin{sazetak}
   \todo{Unesite sažetak na hrvatskom.}
+
+  Ovaj rad 
 \end{sazetak}
 
 \begin{kljucnerijeci}
-  fraktali; WebGL2; koračenje zrakom; praćenje sfera; funkcija daljine
+  fraktali; WebGL2; koračenje zrakom; praćenje sfera; funkcija daljine; vizualizacija
 \end{kljucnerijeci}
 
 % Abstract in English
@@ -438,7 +532,7 @@ Aplikacija se izvodi na web pregledniku i kompatabilna je s mobilnim uređajima.
 \end{abstract}
 
 \begin{keywords}
-  fractals; WebGL2; ray marching; sphere tracing; signed distance function
+  fractals; WebGL2; ray marching; sphere tracing; signed distance function; visualisation
 \end{keywords}
 
 %--- PRIVITCI / APPENDIX -------------------------------------------------------
