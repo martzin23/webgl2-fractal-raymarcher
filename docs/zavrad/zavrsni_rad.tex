@@ -338,7 +338,7 @@ Prvi naćin prikaza objekata je temeljen na boju koraka kojih zraka napravi prij
 
 \begin{figure}[htb]
 	\centering
-    \includegraphics[width=0.38\linewidth]{images/marches.png}
+    \includegraphics[width=0.5\linewidth]{images/marches.png}
     \caption{Prikaz temeljen na broju koraka zrake}
     \label{slk:marches}
 \end{figure}
@@ -365,7 +365,7 @@ Drugi naćin prikaza služi za prikaz vrijednosti normale (slika \ref{slk:normal
 
 \begin{figure}[htb]
 	\centering
-    \includegraphics[width=0.38\linewidth]{images/normals.png}
+    \includegraphics[width=0.5\linewidth]{images/normals.png}
     \caption{Prikaz temeljen na vektoru normale površine}
     \label{slk:normals}
 \end{figure}
@@ -380,9 +380,12 @@ Za aproksimaciju derivacije funkcije koristi se metoda središnjih razlika (\emp
 \begin{lstlisting}[caption=Isječak koda za način prikaza normala, label=alg:normals]
 vec3 deriveNormal(vec3 position, float epsilon) {
     vec3 normal;
-	normal.x = (SDF(position + vec3(epsilon, 0.0, 0.0)) - SDF(position - vec3(epsilon, 0.0, 0.0)));
-	normal.y = (SDF(position + vec3(0.0, epsilon, 0.0)) - SDF(position - vec3(0.0, epsilon, 0.0)));
-	normal.z = (SDF(position + vec3(0.0, 0.0, epsilon)) - SDF(position - vec3(0.0, 0.0, epsilon)));
+    normal.x = SDF(position + vec3(epsilon, 0.0, 0.0)) 
+        - SDF(position - vec3(epsilon, 0.0, 0.0));
+    normal.y = SDF(position + vec3(0.0, epsilon, 0.0)) 
+        - SDF(position - vec3(0.0, epsilon, 0.0));
+    normal.z = SDF(position + vec3(0.0, 0.0, epsilon)) 
+        - SDF(position - vec3(0.0, 0.0, epsilon));
     return normalize(normal  / (2.0 * epsilon));
 }
 
@@ -392,7 +395,7 @@ void main() {
     Data data = rayMarch(camera_ray);
     float factor = 1.0 - (float(data.marches) / uniforms.max_marches);
     if (data.collided)
-        pixel_color = vec3(((data.normal * 2.0 + 1.0) * 0.5 + 0.5) * factor);
+        pixel_color = vec3((data.normal * 0.5 + 0.5) * factor);
     else
         pixel_color = vec3(0.0);
     ...
@@ -403,11 +406,11 @@ void main() {
 
 \subsection{Phongovo osvjetljenje}
 
-Treći način prikaza je lokalno osvjetljenje ostvareno s Phongovim modelom. Difuzna komponenta phongovog modela koristi samo bijelu boju za površinu, a ambijentalna komponenta je jednaka nuli (postoji samo jedan izvor svijetlosti: sunce). Uz lokalni model se prikazuje oštra sijena. Sijena je ostvarena slanjem zrake od točke na površini prema izvoru svjetlosti i provjerom ako je zraka udarila nešto na putu (slika \ref{slk:phong} i implementacija \ref{alg:phong}). 
+Treći način prikaza je lokalno osvjetljenje ostvareno s Phongovim modelom. Postoji samo jedan izvor svijetlosti: sunce. Uz lokalni model se prikazuje oštra sijena. Sijena je ostvarena slanjem zrake od točke na površini prema izvoru svjetlosti i provjerom ako je zraka udarila nešto na putu (slika \ref{slk:phong} i implementacija \ref{alg:phong}). 
 
 \begin{figure}[htb]
 	\centering
-    \includegraphics[width=0.38\linewidth]{images/phong.png}
+    \includegraphics[width=0.5\linewidth]{images/phong.png}
     \caption{Prikaz s lokalnim osvjetljenjem i sjenama}
     \label{slk:phong}
 \end{figure}
@@ -418,6 +421,9 @@ void main() {
     Data camera_data = rayMarch(camera_ray);
     float diffuse = clamp(dot(camera_data.normal, uniforms.sun_direction), 0.0, 1.0);
     float specular = clamp(pow(dot(camera_data.normal, uniforms.sun_direction), 50.0), 0.0, 1.0);
+    vec3 ambient = skyValue(vec3(0.0, 0.0, -1.0)) * 0.5;
+    float ao = 1.0 - (float(camera_data.marches) / uniforms.max_marches);
+    vec3 intensity = skyValue(uniforms.sun_direction) / uniforms.sun_intensity * 2.0;
 
     Ray shadow_ray;
     shadow_ray.direction = uniforms.sun_direction;
@@ -427,7 +433,7 @@ void main() {
     float shadow = float(shadow_data.dist > 100.0);
 
     if (camera_data.collided)
-        pixel_color = vec3((diffuse + specular) * shadow);
+        pixel_color = vec3((1.0 + specular) * diffuse * shadow * intensity + ambient) * ao;
     else
         pixel_color = vec3(0.0);
     ...
@@ -442,7 +448,7 @@ Zadnji i četvrti način prikaza je globalno osvjetljenje (slika \ref{slk:pathtr
 
 \begin{figure}[htb]
 	\centering
-    \includegraphics[width=0.38\linewidth]{images/pathtraced.png}
+    \includegraphics[width=0.5\linewidth]{images/pathtraced.png}
     \caption{Prikaz s globalnim osvjetljenjem}
     \label{slk:pathtraced}
 \end{figure}
@@ -497,8 +503,95 @@ Aplikacija se izvodi na web pregledniku i kompatabilna je s mobilnim uređajima.
 \section{Moguća poboljšanja}
 \todo{poboljsanja}
 
+\newpage{}
+
 \section{Slike}
-\todo{slike}
+
+\todo{slike}aa
+
+\begin{figure}[htb]
+	\centering
+    \includegraphics[width=1\linewidth]{images/r1.png}
+    \caption{R1
+        (
+        Scale: -2
+        Folding limit: 1.09
+        Min radius: 0.27
+        Fixed radius: 1
+        Folding value: 2
+        )
+    }
+    \label{slk:r1}
+\end{figure}
+
+\begin{figure}[htb]
+	\centering
+    \includegraphics[width=1\linewidth]{images/r2.png}
+    \caption{R1
+        (
+        Scale: -1.73
+        Folding limit: 0.77
+        Min radius: 0.68
+        Fixed radius: 2.78
+        Folding value: 2.01
+        )
+    }
+    \label{slk:r2}
+\end{figure}
+
+\begin{figure}[htb]
+	\centering
+    \includegraphics[width=1\linewidth]{images/r3.png}
+    \caption{R1
+        (
+        Scale: -1.86
+        Folding limit: 0.65
+        Min radius: 0.73
+        Fixed radius: 2.09
+        Folding value: 2
+        )
+    }
+    \label{slk:r3}
+\end{figure}
+
+\begin{figure}[htb]
+	\centering
+    \includegraphics[width=1\linewidth]{images/r4.png}
+    \caption{R1
+        (
+        Scale: -1.56
+        Folding limit: 0.96
+        Min radius: 0.87
+        Fixed radius: 2
+        Folding value: 2
+        )
+    }
+    \label{slk:r4}
+\end{figure}
+
+\begin{figure}[htb]
+	\centering
+    \includegraphics[width=1\linewidth]{images/r5.png}
+    \caption{R1
+        (
+        Exponent: 3.13
+        Phi multiplier: 0.85
+        Theta multiplier: 1.72
+        )
+    }
+    \label{slk:r5}
+\end{figure}
+
+\begin{figure}[htb]
+	\centering
+    \includegraphics[width=1\linewidth]{images/r6.png}
+    \caption{R1
+        (
+        Power: 9.51
+        )
+    }
+    \label{slk:r6}
+\end{figure}
 
 %--- ZAKLJUČAK / CONCLUSION ----------------------------------------------------
 
