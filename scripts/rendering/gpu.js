@@ -46,7 +46,7 @@ export default class GPUManager {
             canvas_size: new Vector2D(this.base_render_size.x, this.base_render_size.y),
             buffer_size: new Vector2D(this.base_render_size.x, this.base_render_size.y),
 
-            render_scale: 1.0,
+            render_scale: 2.0,
             temporal_counter: 1.0,
             focus_distance: 1.0,
             focus_strength: 0.0,

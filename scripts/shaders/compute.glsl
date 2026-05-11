@@ -89,6 +89,9 @@ void main() {
         Data camera_data = rayMarch(camera_ray);
         float diffuse = clamp(dot(camera_data.normal, uniforms.sun_direction), 0.0, 1.0);
         float specular = clamp(pow(dot(camera_data.normal, uniforms.sun_direction), 50.0), 0.0, 1.0);
+        vec3 ambient = skyValue(vec3(0.0, 0.0, -1.0)) * 0.5;
+        float ao = 1.0 - (float(camera_data.marches) / uniforms.max_marches);
+        vec3 intensity = skyValue(uniforms.sun_direction) / uniforms.sun_intensity * 2.0;
 
         Ray shadow_ray;
         shadow_ray.direction = uniforms.sun_direction;
@@ -98,9 +101,9 @@ void main() {
         float shadow = float(shadow_data.dist > 100.0);
 
         if (camera_data.collided) {
-            pixel_color = vec3((diffuse + specular) * shadow);
+            pixel_color = vec3((1.0 + specular) * diffuse * shadow * intensity + ambient) * ao;
         } else {
-            pixel_color = vec3(0.0);
+            pixel_color = skyValue(camera_ray.direction);
         }
         output_color = vec4(previous_color.xyz * ((uniforms.temporal_counter - 1.0) / uniforms.temporal_counter) + pixel_color * (1.0 / uniforms.temporal_counter), 1.0);
     } else if (uniforms.shader_mode == 3.0) {
@@ -210,10 +213,10 @@ void focusBlur(inout Ray ray, inout uint seed, const float range, const float st
 }
 
 vec3 skyValue(vec3 direction) {
-    const vec3 sun_color = vec3(1.0, 1.0, 0.8);
+    const vec3 sun_color = vec3(1.0, 1.0, 1.0);
     float sun_intensity = uniforms.sun_intensity;
 
-    const vec3 horizon_color = vec3(1.8, 1.8, 2.0);
+    const vec3 horizon_color = vec3(0.9, 0.9, 1.0);
     const vec3 zenith_color = vec3(0.2, 0.2, 0.8);
     const vec3 ground_color = vec3(0.1);
     float sky_intensity = uniforms.sky_intensity;
@@ -222,7 +225,7 @@ vec3 skyValue(vec3 direction) {
     float day_factor = dot(vec3(0.0, 0.0, 1.0), uniforms.sun_direction) * 0.5 + 0.5;
     float sun_factor = pow(dot(direction, uniforms.sun_direction) * 0.5 + 0.5, 100.0 + (1.0 - day_factor) * 1000.0);
 
-    vec3 day_color = mix(horizon_color, zenith_color, pow(clamp(abs(altitude), 0.0, 1.0), 0.5)) * sky_intensity;
+    vec3 day_color = mix(horizon_color, zenith_color, pow(clamp(abs(altitude), 0.0, 1.0), 0.25)) * sky_intensity;
     vec3 night_color = day_color * vec3(0.1, 0.1, 0.3);
     vec3 sun_value = sun_factor * sun_color * sun_intensity;
 
