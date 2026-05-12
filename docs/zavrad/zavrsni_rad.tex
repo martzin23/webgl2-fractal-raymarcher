@@ -12,13 +12,11 @@
 }
 \renewcommand{\lstlistingname}{Algoritam}
 
+
+\usepackage{tabularx}
+
 \usepackage{xcolor}
 \newcommand{\todo}[1]{{\textcolor{red}{[#1]}}}
-
-% \usepackage[]{algorithm2e}
-% % \usepackage[linesnumbered, boxed, vlined]{algorithm2e}
-% \renewcommand{\algorithmcfname}{Algoritam}
-% \SetKwProg{Fn}{Function}{}{end}
 
 %--- PODACI O RADU / THESIS INFORMATION ----------------------------------------
 
@@ -77,16 +75,16 @@
 
 % Neki od radova koje ćemo citirati su \cite{6248073,6247753,ghiglia_pritt_phase_unwrapping,hartley2003multiple,4250461,123DCatch}.
 % Trebaju nam samo radi testiranja kako izgleda referenciranje rada s konferencije, rada iz časopisa, knjige i Internetske stranice.
+% a
+% % \begin{figure}[htb]
+% %   \centering
+% %   \includegraphics[width=0.38\linewidth]{Figures/lenovo_yoga_tab3_pro_front.png} 
+% %   \caption{Moja prva slika}
+% %   \label{slk:prvaslika}
+% % \end{figure}
 
-% \begin{figure}[htb]
-%   \centering
-%   \includegraphics[width=0.38\linewidth]{Figures/lenovo_yoga_tab3_pro_front.png} 
-%   \caption{Moja prva slika}
-%   \label{slk:prvaslika}
-% \end{figure}
-
-% Referenciramo se na sliku \ref{slk:prvaslika} u sredini rečenice, zatim prije zareza \ref{slk:prvaslika}, te zatim na kraju rečenice % \ref{slk:prvaslika}.
-% Upravo smo testirali radi li naredba \verb|\ref| ispravno u slučaju kada nakon nje slijedi točka.
+% % Referenciramo se na sliku \ref{slk:prvaslika} u sredini rečenice, zatim prije zareza \ref{slk:prvaslika}, te zatim na kraju rečenice % \ref{slk:prvaslika}.
+% % Upravo smo testirali radi li naredba \verb|\ref| ispravno u slučaju kada nakon nje slijedi točka.
 
 % Sada slijedi jedna jednadžba:
 % \begin{equation}
@@ -97,15 +95,15 @@
 
 %--- GLAVNI DIO ----------------------------------------------------------------------------
 
-\chapter{Teorija}
+\chapter{Teorijska pozadina}
 \label{pog:teorija}
 
 \section{Funkcije udaljenosti}
 \label{podpog:funkcije_udaljenosti}
 
-Postoji više načina na koje se može zapisati neko tijelo. U računalnoj grafici se najčešće trodimenzionalni modeli opisuju mrežom trokuta. Trokuti su praktični jer imaju jednostavnu strukturu i mogu se efikasno iscrtati. Unatoč toga, postoje nedostatci takvim pristupom. Da bi se postigla zakrivljena površina, potrebno je izgraditi površinu s velikim brojem trokuta. Time površina nikad neće biti uistinu zakrivljena, nego će se sastojati od diskretnih ravnih dijelova. Neke strukture (kao na primjer spužvaste strukture) zahtijevaju toliko veliki broj trokuta da mora se napraviti kompromis brisanjem detalja strukture radi optimizacije. Detalji se općenito dodaju modelima koristeći teksture, no u tim slućajevima stvarna geometrija još uvijek ostaje pojednostavljena.
+Postoji više načina na koje se može zapisati neko tijelo. U računalnoj grafici se najčešće trodimenzionalni modeli opisuju mrežom trokuta. Trokuti su praktični jer imaju jednostavnu strukturu i mogu se efikasno iscrtati. Unatoč toga, postoje nedostatci takvim pristupom. Da bi se postigla zakrivljena površina, potrebno je izgraditi površinu s velikim brojem trokuta. Time površina nikad neće biti uistinu zakrivljena, nego će se sastojati od diskretnih ravnih dijelova. Neke strukture (kao na primjer spužvaste strukture) zahtijevaju toliko veliki broj trokuta da se treba napraviti kompromis brisanjem detalja strukture radi optimizacije. Detalji se općenito dodaju modelima koristeći teksture, no u tim slućajevima stvarna geometrija još uvijek ostaje pojednostavljena.
 
-Način prikaza tijela koje će se razmatrati u ovom radu jer matematički opis. Specifično, ono što ovaj rad koristi su funkcije udaljenosti (\emph{eng. Signed Distance Function, SDF}). Oblik funkcije je sljedeći: $f(p)$. Gdje je $p$ točka u prostoru, a rezultat funkcije $f(p)$ je udaljenost te točke od površine tijela koju funkcija opisuje. Dimenzija prostora u kojem se mora nalaziti ulazna točka određuje funkcija. Primjer jedne takve funkcije za opis sfere je navedena ispod u jednađbi \eqref{eq:sdf}.
+Način prikaza tijela koje će se razmatrati u ovom radu jer matematički opis. Specifično, ono što ovaj rad koristi su funkcije udaljenosti (\emph{eng. Signed Distance Function, SDF}). Oblik funkcije je sljedeći: $f(p)$. Gdje je $p$ točka u prostoru, a rezultat funkcije $f(p)$ je udaljenost te točke od površine tijela koju funkcija opisuje. Dimenzija prostora u kojem se treba nalaziti ulazna točka određuje funkcija. Primjer jedne takve funkcije za opis sfere je navedena ispod u jednađbi \eqref{eq:sdf}.
 
 \begin{equation}
 	\label{eq:sdf}
@@ -142,7 +140,7 @@ Cilj je postići prikaz fraktala. Potreban je algoritam koji uzima opis tijela u
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.38\linewidth]{images/spheretracing.png}
+	\includegraphics[width=0.5\linewidth]{images/spheretracing.png}
 	\caption{Koraci zrake u praćenju sfere}
 	\label{slk:spheretracing}
 \end{figure}
@@ -168,7 +166,7 @@ pracenje_sfere(org, dir, max, epsilon) {
 }
 \end{lstlisting}
 
-\chapter{Implementacija}
+\chapter{Programska implementacija}
 \label{pog:implementacija}
 
 \section{Korišteni alati}
@@ -185,7 +183,7 @@ Rezultat rada će se posluživati pomoću \emph{GitHub Pages}. To je praktično 
 \section{Komponente programa}
 \label{podpog:komponente_programa}
 
-Ovo poglavlje služi za kratak opis glavnih dijelova programa. Najvažniji dijelovi su četiri klase, koje se nalaze u skraćenom dijagramu razreda na slici \ref{slk:classes}. Klasa \textbf{\emph{Renderer}} upravlja svim ostalim dijelovima: poziva inicijalizaciju scene i sučelja, učitava pohranjene postavke i upravlja komunikacijom između objekata. Zatim je klasa \textbf{\emph{GPUManager}}, koja je najkompleksnija. Stvara \emph{WebGL2} kontekst, poziva \emph{WebGL2} funkcije, upravlja sjenčarima, sinkronizira rezoluciju ekrana i definira kako će se izvršiti postupak iscrtavanja okvira (detaljnije u sljedećem poglavlju). Klasa \textbf{\emph{GUIManager}} implementira funkcionalnosti korisničkog sučelja tako da pri učitavanju stranice sagradi sučelje i aktivno ažurira uniformne varijable sjenčara kada korisnik promijeni vrijednosti. Konačno je zadnja glavna klasa \textbf{\emph{Camera}}. Kamera služi kao kontejner informacija potrebnih za inicijalizaciju zraka i uoravlja tim podacima na temelju korisničkih ulaza tipkovnicom i mišem.
+Ovo poglavlje služi za kratak opis glavnih dijelova programa. Najvažniji dijelovi su četiri klase, koje se nalaze u skraćenom dijagramu razreda na slici \ref{slk:classes}. U dijagramu je umjesto lokalnih varijabla stavljeno "..." zato što nisu nužne za opis funkcionalnosti klase. Klasa \textbf{\emph{Renderer}} upravlja svim ostalim dijelovima: poziva inicijalizaciju scene i sučelja, učitava pohranjene postavke i upravlja komunikacijom između objekata. Zatim je klasa \textbf{\emph{GPUManager}}, koja je najkompleksnija. Stvara \emph{WebGL2} kontekst, poziva \emph{WebGL2} funkcije, upravlja sjenčarima, sinkronizira rezoluciju ekrana i definira kako će se izvršiti postupak iscrtavanja okvira (detaljnije u sljedećem poglavlju). Klasa \textbf{\emph{GUIManager}} implementira funkcionalnosti korisničkog sučelja tako da pri učitavanju stranice sagradi sučelje i aktivno ažurira uniformne varijable sjenčara kada korisnik promijeni vrijednosti. Konačno je zadnja glavna klasa \textbf{\emph{Camera}}. Kamera služi kao kontejner informacija potrebnih za inicijalizaciju zraka i uoravlja tim podacima na temelju korisničkih ulaza tipkovnicom i mišem.
 
 \begin{figure}[htb]
 	\centering
@@ -199,7 +197,7 @@ Ovo poglavlje služi za kratak opis glavnih dijelova programa. Najvažniji dijel
 \section{Postupak iscrtavanja}
 \label{podpog:postupak_iscrtavanja}
 
-Iscrtavanje je stvaranje slike virtualne scene koja se prikazuje na ekranu. Za scene s ciljem prikaza u stvarnom vremenu, frekvencija iscrtavanja mora biti dovoljno velika. Radi brzine, veliki dio postupka iscrtavanja je izveden hardverski i postoji definirani grafički protočni sustav kojeg se treba pridržavati da bi se nacrtao neki 3D model. U WebGL2 je obavezno definirati barem sjenčara geometrije (\emph{engl. vertex shader}) i sjenčara fragmenata (\emph{engl. fragment shader}). U ovome slučaju, modeli koje želimo prikazati se ne sastoje od trokuta i tehnički nije potrebna geometrijska faza. Bilo bi praktično koristiti računske sjenčare (\emph{engl. compute shaders}), no kao što je prije navedeno, \emph{WebGL2} ne omogućuje izradu računskih sjenčara. Stoga je postupak iscrtavanja izveden onime što imamo i što moramo koristiti. U nastavku će biti objašnjeni postupak iscrtavanja u sastavljenom programu i biti će navedeni ključni objekti koji se koriste pri iscrtavanju. Slika \ref{slk:pipeline} prikazuje vizualno redoslijed grafičkih programa i objekte koji se opisuju.
+Iscrtavanje je stvaranje slike virtualne scene koja se prikazuje na ekranu. Za scene s ciljem prikaza u stvarnom vremenu, frekvencija iscrtavanja mora biti dovoljno velika. Radi brzine, veliki dio postupka iscrtavanja je izveden hardverski i postoji definirani grafički protočni sustav kojeg se treba pridržavati da bi se nacrtao neki 3D model. U WebGL2 je obavezno definirati barem sjenčara geometrije (\emph{engl. vertex shader}) i sjenčara fragmenata (\emph{engl. fragment shader}). U ovome slučaju, modeli koje želimo prikazati se ne sastoje od trokuta i tehnički nije potrebna geometrijska faza. Bilo bi praktično koristiti računske sjenčare (\emph{engl. compute shaders}), no kao što je prije navedeno, \emph{WebGL2} ne omogućuje izradu računskih sjenčara. Stoga je postupak iscrtavanja izveden onime što imamo i što trebamo koristiti. U nastavku će biti objašnjeni postupak iscrtavanja u sastavljenom programu i biti će navedeni ključni objekti koji se koriste pri iscrtavanju. Slika \ref{slk:pipeline} prikazuje vizualno redoslijed grafičkih programa i objekte koji se opisuju.
 
 Crtanje jednog okvira se izvodi u dva poziva na crtanje (\emph{engl. draw calls}). U svakom pozivu na crtanje se izvodi standardna grafička protočna struktura: sjenčar geometrije se iterira po točkama modela i sjenčar fragmenata se iterira po fragmentima. Jedini pravi model koji se koristi je kvadrat (dvoje trokuta) koji pokriva cijeli ekran. Geometrijski sjenčar samo prosljeđuje pozicije točaka modela kvadrata i ništa drugo. Model i geometrijski sjenčar su identična za oba poziva za crtanje. Gotovo sva logika koja se opisuje je u sjenčarima fragmenta.
 
@@ -258,25 +256,25 @@ Sučelje nudi odabir funkcije udaljenosti koja se prikazuje. Prvi odabir je \emp
 \begin{figure}[htbp]
     \centering
     \begin{tabular}{cc}
-        \begin{minipage}{0.25\textwidth}
+        \begin{minipage}{0.30\textwidth}
             \centering
             \includegraphics[width=\linewidth]{images/mandelbox.png}
             \captionof{figure}{\emph{Mandelbox}}
             \label{slk:mandelbox}
         \end{minipage} &
-        \begin{minipage}{0.25\textwidth}
+        \begin{minipage}{0.30\textwidth}
             \centering
             \includegraphics[width=\linewidth]{images/mandelbulb.png}
             \captionof{figure}{\emph{Mandelbulb}}
             \label{slk:mandelbulb}
         \end{minipage} \\
-        \begin{minipage}{0.25\textwidth}
+        \begin{minipage}{0.30\textwidth}
             \centering
             \includegraphics[width=\linewidth]{images/kochcurve.png}
             \captionof{figure}{Kochova krivulja}
             \label{slk:kochcurve}
         \end{minipage} &
-        \begin{minipage}{0.25\textwidth}
+        \begin{minipage}{0.30\textwidth}
             \centering
             \includegraphics[width=\linewidth]{images/juliabulb.png}
             \captionof{figure}{\emph{Juliabulb}}
@@ -305,7 +303,7 @@ Za svakog od fraktala je moguće mijenjati nekoliko njegovih parametra. Slika \r
             \includegraphics[width=\linewidth]{images/mb3.png}
         \end{minipage}
     \end{tabular}
-    \caption{\emph{mandelbox} s različitim parametrima}
+    \caption{Fraktal \emph{mandelbox} s različitim parametrima}
     \label{slk:mandelbox_test}
 \end{figure}
 
@@ -313,6 +311,49 @@ Za svakog od fraktala je moguće mijenjati nekoliko njegovih parametra. Slika \r
 
 \section{Načini prikaza}
 \label{podpog:nacini_prikaza}
+
+Prikaz tijela se ostvaruje u dva koraka: određivanje točke na površini tijela algoritmom praćenja sfere i pretravanje informacija o toj točki u boju na ekranu. Algoritam praćenja sfere je implementiran po pseudokodu \ref{alg:spheretracing} (koji je prije opisan) i kod rješenja se nalazi u algoritmu \ref{alg:spheretracing2}. Za algoritam se koriste dvoje struktura \emph{Ray} i \emph{Data}. \emph{Ray} opisuje zraku i koristi se kao ulaz u algoritam, a \emph{Data} služi za čuvanje podataka koje algoritam izračuna u jednom paketu. Pretvaranje podataka u boju je izveden u četiri načina i to su u ovom projektu nazvani "Načini prikaza". Slijedeća podpoglavlja služe za opis svakog načina prikaza.
+
+\begin{lstlisting}[caption=Isječak koda za implementaciju praćenja sfere, label=alg:spheretracing2]
+// struktura za opis zrake    
+struct Ray {
+    vec3 origin; // ishodiste zrake
+    vec3 direction; // smjer zrake
+};
+
+// kontejner informacija za rezultat algoritma
+struct Data {
+    vec3 position; // tocka presjeka zrake i tijela
+    bool collided; // je li zraka udarila tijelo
+    vec3 normal; // normala povrsine u tocki presjeka
+    float dist; // duljina puta kojem je zraka putovala
+    int marches; // broj koraka kojih je zraka otputovala
+};
+
+// algoritam pracenja sfere
+Data rayMarch(Ray ray) {
+    Data data;
+    data.position = ray.origin;
+    data.collided = false;
+    data.marches = 0;
+
+    for (; data.marches < int(uniforms.max_marches); data.marches++) {
+        float d = SDF(data.position);
+        if (d < pow(2.0, -uniforms.detail)) {
+            data.collided = true;
+            break;
+        }
+        data.position += d * ray.direction;
+    }
+
+    // funkcija deriveNormal() je opisana u poglavlju "Normale"
+    data.normal = deriveNormal(data.position, uniforms.normals_precision);
+    data.dist = length(data.position - ray.origin); 
+    return data;
+}
+\end{lstlisting}
+
+\newpage{}
 
 \subsection{Broj koraka}
 
@@ -330,7 +371,7 @@ Prvi naćin prikaza objekata je temeljen na boju koraka kojih zraka napravi prij
         \begin{minipage}{0.38\textwidth}
             \centering
             \includegraphics[width=\linewidth]{images/ao2.png}
-            \captionof{figure}{Zraka koja prolazi blizu površine tijela, a ne dotagne ga}
+            \captionof{figure}{Zraka koja prolazi blizu površine tijela, a ne dotakne ga}
             \label{slk:ao2}
         \end{minipage} 
     \end{tabular}
@@ -346,10 +387,6 @@ Prvi naćin prikaza objekata je temeljen na boju koraka kojih zraka napravi prij
 \begin{lstlisting}[caption=Isječak koda za način prikaza brojem koraka zrake, label=alg:marches]
 void main() {
     ...
-    // rayMarch() - implementacija algoritma pracenja sfere
-    // Data - kontejner informacija koje su izracunate algoritmom
-    // data.marches - broj koraka zrake
-    // data.collided - je li zraka dotaknula nesto
     Data data = rayMarch(camera_ray);
     float factor = 1.0 - (float(data.marches) / uniforms.max_marches);
     pixel_color = vec3(mix(0.0, factor, float(data.collided)));
@@ -370,7 +407,7 @@ Drugi naćin prikaza služi za prikaz vrijednosti normale (slika \ref{slk:normal
     \label{slk:normals}
 \end{figure}
 
-Za aproksimaciju derivacije funkcije koristi se metoda središnjih razlika (\emph{engl. central difference method}, formula \ref{eq:cdm}). Funkcija se mora evaluirati dva puta za svaku os i koristi se proizvoljan vrlo mali broj. Implementacija izračuna normale u točki zajedno s kodom za izračun boje je u algoritmu \ref{alg:normals} .
+Za aproksimaciju derivacije funkcije koristi se metoda središnjih razlika (\emph{engl. central difference method}, formula \ref{eq:cdm}). Funkcija se mora evaluirati dva puta za svaku os i kao parametar se koristi proizvoljan vrlo mali broj $dx$. Implementacija izračuna normale u točki zajedno s kodom za izračun boje je u algoritmu \ref{alg:normals} .
 
 \begin{equation}
 	\label{eq:cdm}
@@ -378,6 +415,7 @@ Za aproksimaciju derivacije funkcije koristi se metoda središnjih razlika (\emp
 \end{equation}
 
 \begin{lstlisting}[caption=Isječak koda za način prikaza normala, label=alg:normals]
+// varijabla "epsilon" je ekvivalentna "dx" iz gornje formule
 vec3 deriveNormal(vec3 position, float epsilon) {
     vec3 normal;
     normal.x = SDF(position + vec3(epsilon, 0.0, 0.0)) 
@@ -388,10 +426,9 @@ vec3 deriveNormal(vec3 position, float epsilon) {
         - SDF(position - vec3(0.0, 0.0, epsilon));
     return normalize(normal  / (2.0 * epsilon));
 }
-
+// pretvaranje vektora normale u boju
 void main() {
     ...
-    // data.normal - vektor normale u tocki u kojoj je zraka zavrsila, koristi funkciju deriveNormal()
     Data data = rayMarch(camera_ray);
     float factor = 1.0 - (float(data.marches) / uniforms.max_marches);
     if (data.collided)
@@ -404,9 +441,9 @@ void main() {
 
 \newpage{}
 
-\subsection{Phongovo osvjetljenje}
+\subsection{Lokalno osvjetljenje}
 
-Treći način prikaza je lokalno osvjetljenje ostvareno s Phongovim modelom. Postoji samo jedan izvor svijetlosti: sunce. Uz lokalni model se prikazuje oštra sijena. Sijena je ostvarena slanjem zrake od točke na površini prema izvoru svjetlosti i provjerom ako je zraka udarila nešto na putu (slika \ref{slk:phong} i implementacija \ref{alg:phong}). 
+Treći način prikaza je lokalno osvjetljenje ostvareno s Phongovim modelom. Postoji samo jedan izvor svijetlosti: sunce. Uz lokalni model se prikazuje oštra sijena. Sijena je ostvarena slanjem zrake od točke na površini prema izvoru svjetlosti i provjerom je li  zraka udarila nešto na putu (slika \ref{slk:phong} i implementacija \ref{alg:phong}). 
 
 \begin{figure}[htb]
 	\centering
@@ -419,19 +456,22 @@ Treći način prikaza je lokalno osvjetljenje ostvareno s Phongovim modelom. Pos
 void main() {
     ...
     Data camera_data = rayMarch(camera_ray);
+
+    // izracun komponenta osvjetljenja
     float diffuse = clamp(dot(camera_data.normal, uniforms.sun_direction), 0.0, 1.0);
     float specular = clamp(pow(dot(camera_data.normal, uniforms.sun_direction), 50.0), 0.0, 1.0);
     vec3 ambient = skyValue(vec3(0.0, 0.0, -1.0)) * 0.5;
     float ao = 1.0 - (float(camera_data.marches) / uniforms.max_marches);
     vec3 intensity = skyValue(uniforms.sun_direction) / uniforms.sun_intensity * 2.0;
 
+    // slanje zrake i izracun sijene
     Ray shadow_ray;
     shadow_ray.direction = uniforms.sun_direction;
     shadow_ray.origin = camera_data.position + camera_data.normal * uniforms.epsilon;
-
     Data shadow_data = rayMarch(shadow_ray);
     float shadow = float(shadow_data.dist > 100.0);
 
+    // spajanje komponenata u boju
     if (camera_data.collided)
         pixel_color = vec3((1.0 + specular) * diffuse * shadow * intensity + ambient) * ao;
     else
@@ -442,9 +482,9 @@ void main() {
 
 \newpage{}
 
-\subsection{Praćenje zrake}
+\subsection{Globalno osvjetljenje}
 
-Zadnji i četvrti način prikaza je globalno osvjetljenje (slika \ref{slk:pathtraced}). Koristi se pojednostavljena metoda praćenja zrake zajedno s \emph{ping-pong} spremnikom. Kada zraka dođe do površine, odbije u nasumičnom smjeru i nastavi se odbijati dok ne prijeđe maksimalan broj odbijanja (rezultat je crna boja) ili otiđe u nebo (rezultat je boja neba u tom smjeru) (algoritam \ref{alg:pathtraced}). Konačni rezultat je prosijek svih boja koje su dobivene za dani piksel. Pošto je ovaj postupak računski intenzivan, zbog responzivnosti i optimizacije je prosijek računan između prošlog i trenutnog okvira koji se iscrtava. Time treba manje vremena za izračun pojedinog okvira, a slika se postepeno razvija u bolji razultat što se duže kamere a ne kreće.
+Zadnji i četvrti način prikaza je globalno osvjetljenje (slika \ref{slk:pathtraced}). Koristi se pojednostavljena algoritam praćenja zrake zajedno s \emph{ping-pong} spremnikom. Kada zraka dođe do površine, odbije u nasumičnom smjeru i nastavi se odbijati dok ne prijeđe maksimalan broj odbijanja (rezultat je crna boja) ili otiđe u nebo (rezultat je boja neba u tom smjeru) (algoritam \ref{alg:pathtraced}). Konačni rezultat je prosijek svih boja koje su dobivene za dani piksel. Pošto je ovaj postupak računski intenzivan, zbog responzivnosti i optimizacije je prosijek računan između prošlog i trenutnog okvira koji se iscrtava. Time treba manje vremena za izračun pojedinog okvira, a slika se postepeno razvija u bolji razultat što se duže program ostavi da radi.
 
 \begin{figure}[htb]
 	\centering
@@ -471,6 +511,7 @@ vec3 pathTrace(Ray camera_ray, inout uint seed) {
 void main() {
     ...
     pixel_color = pathTrace(camera_ray, seed);
+    // izracun prosijeka trenutne boje i boje proslog okvira
     output_color = vec4(previous_color.xyz * ((uniforms.temporal_counter - 1.0) / uniforms.temporal_counter) + pixel_color * (1.0 / uniforms.temporal_counter), 1.0);
     ...
 }
@@ -492,50 +533,19 @@ Aplikacija se izvodi na web pregledniku i kompatabilna je s mobilnim uređajima.
 \chapter{Rezultati i rasprava}
 \label{pog:rezultati_i_rasprava}
 
-\todo{generalno}
+\section{Moguća poboljšanja}
+
+\todo{poboljsanja}
+
+\section{Najteži dijelovi}
 
 \todo{najtezi dijelovi}
 
-\section{Mjerenje performansi}
-
-\todo{usporedba performanse komp mob lap}a
-
-\todo{varijabla marches}
-
-\todo{varijabla rezolucija}
-
-\todo{nacin iscrtavanja}
-
-\begin{figure}[htb]
-	\centering
-	\caption{test}
-	\label{tab:test}
-	\begin{tabular}{|c|c|c|c|}
-	% \begin{tabular}{|c|c|c|}
-		\hline
-		Uređaj & Dijeljitelj rezolucije & Broj piksela & Brzina scrtavanja (fps) \\
-		\hline
-		1 & 1 & 1 & 1 \\
-		\hline
-		
-		% \hline
-		% \textbf{Column 1} & \textbf{Column 2} & \textbf{Column 3} \\
-		% \hline
-		% Data 1 & Data 2 & Data 3 \\
-		% Data 4 & Data 5 & Data 6 \\
-		% Data 7 & Data 8 & Data 9 \\
-		% \hline
-	\end{tabular}
-\end{figure}
-
-\section{Moguća poboljšanja}
-\todo{poboljsanja}
-
 \newpage{}
 
-\section{Slike}
+\section{Slike rezultata}
 
-Sljedeće slike služe za prikaz rezultata rada. Vizualizirani su nekoliko fraktala s globalnim osvjetljenjem. Na svakoj slici je naveden fraktal koji je odabran i koji su parametri korišteni.
+Sljedeće slike služe za prikaz rezultata rada. Vizualizirani su nekoliko fraktala s globalnim osvjetljenjem. Na svakoj slici je naveden fraktal koji je odabran zajedno s vrijednostima korištenih parametara.
 
 \begin{figure}[htb]
 	\centering
@@ -567,6 +577,8 @@ Sljedeće slike služe za prikaz rezultata rada. Vizualizirani su nekoliko frakt
     \label{slk:r2}
 \end{figure}
 
+\newpage{}
+
 \begin{figure}[htb]
 	\centering
     \includegraphics[width=0.9\linewidth]{images/r3.png}
@@ -597,6 +609,8 @@ Sljedeće slike služe za prikaz rezultata rada. Vizualizirani su nekoliko frakt
     \label{slk:r4}
 \end{figure}
 
+\newpage{}
+
 \begin{figure}[htb]
 	\centering
     \includegraphics[width=0.9\linewidth]{images/r5.png}
@@ -619,6 +633,108 @@ Sljedeće slike služe za prikaz rezultata rada. Vizualizirani su nekoliko frakt
         )
     }
     \label{slk:r6}
+\end{figure}
+
+\newpage{}
+
+\section{Mjerenje performansi}
+
+Ovo poglavlje služi za dokum
+
+\begin{figure}[htb]
+	\centering
+	\caption{Specifikacije uređaja za testiranje}
+	\label{tab:fps_device}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		Uređaj & Naziv & Procesor & Grafički procesor & Maksimalna brzina \\
+		 & & (CPU) & (GPU/iGPU) & iscrtavanja (fps) \\
+		\hline
+		1 & Desktop PC & i5-14400F  & RTX 4060Ti & 144 Hz \\
+        & & @ 2.50GHz & & \\
+		\hline
+        2 & HP ProBook 650 G5 & i5-8265U  & UHD Graphics 620 & 60 Hz\\
+        & & @ 1.60GHz & & \\
+		\hline
+        3 & Redmi Note 9 & Octa-core Max  & Mali-G52 MC2 & 60 Hz\\
+        & & @ 2.00GHz & & \\
+		\hline
+	\end{tabular}
+\end{figure}
+
+\begin{figure}[htb]
+	\centering
+	\caption{Performanse ovisno o rezoluciji}
+	\label{tab:fps_resolution}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		Uređaj & Djeljitelj & Rezolucija & Brzina scrtavanja \\
+		 & rezolucije & (širina x visina) & (fps) \\
+		\hline
+		1 & 1 & 2048 x 1131 & 144 Hz \\
+		1 & 2 & 1024 x 565 & 144 Hz \\
+		1 & 3 & 682 x 377 & 144 Hz \\
+		\hline
+		2 & 1 & 1408 x 779 & 10 Hz \\
+		2 & 2 & 704 x 389 & 34 Hz\\
+		2 & 3 & 469 x 259 & 60 Hz \\
+		\hline
+		3 & 1 & 365 x 292 & 23 Hz \\
+		3 & 2 & 182 x 149 & 46 Hz \\
+		3 & 3 & 121 x 99 & 60 Hz \\
+		\hline
+	\end{tabular}
+\end{figure}
+
+\begin{figure}[htb]
+	\centering
+	\caption{Performanse ovisno o maksimalnom broju koraka zrake}
+	\label{tab:fps_maxmarches}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Uređaj & Maksimalan & Brzina scrtavanja \\
+		& broj koraka & (fps) \\
+		\hline
+		1 & 50 & 144 Hz\\
+		1 & 100 & 144 Hz\\
+		1 & 200 & 144 Hz\\
+		\hline
+		2 & 50 & 31 Hz \\
+		2 & 100 & 26 Hz \\
+		2 & 200 & 25 Hz \\
+		\hline
+		3 & 50 & 48 Hz \\
+		3 & 100 & 42 Hz \\
+		3 & 200 & 39 Hz \\
+		\hline
+	\end{tabular}
+\end{figure}
+
+\begin{figure}[htb]
+	\centering
+	\caption{Performanse ovisno o načinu iscrtavanja}
+	\label{tab:fps_view}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Uređaj & Način prikaza & Brzina scrtavanja \\
+		 & & (fps) \\
+		\hline
+		1 & Broj koraka & 144 Hz\\
+		1 & Normale & 144 fps \\
+		1 & Lokalno osvjetljenje & 103 Hz \\
+		1 & Globalno osvjetljenje & 64 Hz \\
+		\hline
+		2 & Broj koraka & 31 Hz \\
+		2 & Normale & 26 Hz \\
+		2 & Lokalno osvjetljenje & 14 Hz \\
+		2 & Globalno osvjetljenje & 10 Hz \\
+		\hline
+		3 & Broj koraka & 48 Hz \\
+		3 & Normale & 45 Hz \\
+		3 & Lokalno osvjetljenje & 31 Hz \\
+		3 & Globalno osvjetljenje & 22 Hz \\
+		\hline
+	\end{tabular}
 \end{figure}
 
 %--- ZAKLJUČAK / CONCLUSION ----------------------------------------------------
