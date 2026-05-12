@@ -533,15 +533,114 @@ Aplikacija se izvodi na web pregledniku i kompatabilna je s mobilnim uređajima.
 \chapter{Rezultati i rasprava}
 \label{pog:rezultati_i_rasprava}
 
-\section{Moguća poboljšanja}
+\section{Mjerenje performansi}
 
-\todo{poboljsanja}
+U ovom poglavlju se dokumentiraju mjerenja brzine programa. Testiranje je provedeno na troje uređaja, te tablica \ref{tab:fps_device} prikazuje njihove specifikacije. Napomena: postoje slučajevi kada mijenjanjem varijabla brzina iscrtavanja prestaje rasti i ostane konstantna. To je zato što internetski preglednik koji izvodi WebGL2 aplikaciju automatski ograniči brzinu iscrtavanja na brzinu osvježavanja ekrana. U svakom testu se koriste sve defaultne postavke i vrijednosti varijabla, osim dvije stvari: varijable koja se varira (navedena je u tablici) i odabrana funkcija udaljenosti (u svakom testu je odabran fraktal \emph{mandelbox}). Za testiranje su odabrane varijable za koje se očekuje da imaju značajan utjecaj na performanse: djeljitelj rezolucije, maksimalan broj koraka zrake i način prikaza. S obzirom da je kompleksnost programa najveća unutar sjenčara, očekivano je da će performanse najviše ovisiti o grafičkom procesoru uređaja.
 
-\section{Najteži dijelovi}
+\begin{figure}[htb]
+	\centering
+	\caption{Specifikacije uređaja za testiranje}
+	\label{tab:fps_device}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		Uređaj & Naziv & Procesor & Grafički procesor & Maksimalna brzina \\
+		 & & (CPU) & (GPU/iGPU) & iscrtavanja (FPS) \\
+		\hline
+		1 & Desktop PC & i5-14400F  & RTX 4060Ti & 144 Hz \\
+        & & @ 2.50GHz & & \\
+		\hline
+        2 & HP ProBook 650 G5 & i5-8265U  & UHD Graphics 620 & 60 Hz\\
+        & & @ 1.60GHz & & \\
+		\hline
+        3 & Redmi Note 9 & Octa-core Max  & Mali-G52 MC2 & 60 Hz\\
+        & & @ 2.00GHz & & \\
+		\hline
+	\end{tabular}
+\end{figure}
 
-\todo{najtezi dijelovi}
+Prvo mjerenje uključuje variranje veličine rezolucije iscrtavanja (tablica \ref{tab:fps_resolution}). Napomena: rezolucija ne znači veličina ekrana, nego se odnosi specifično na vrijednosti prozora za prikaz (\emph{engl. viewport}) WebGL2 programa za prvi poziv na iscrtavanje (onaj poziv koji obavlja glavni algoritam). Iz rezultata se vidi da rezolucija ima veliki utjecaj na brzinu iscrtavanja. To je zato što se algoritam nalazi u sjenčaru fragmenta koji se izvodi za svaki piksel slike.
 
-\newpage{}
+\begin{figure}[htb]
+	\centering
+	\caption{Performanse ovisno o rezoluciji}
+	\label{tab:fps_resolution}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		Uređaj & Djeljitelj & Rezolucija & Brzina scrtavanja \\
+		 & rezolucije & (širina x visina) & (FPS) \\
+		\hline
+		1 & 1 & 2048 x 1131 & 144 Hz \\
+		1 & 2 & 1024 x 565 & 144 Hz \\
+		1 & 3 & 682 x 377 & 144 Hz \\
+		\hline
+		2 & 1 & 1408 x 779 & 10 Hz \\
+		2 & 2 & 704 x 389 & 34 Hz\\
+		2 & 3 & 469 x 259 & 60 Hz \\
+		\hline
+		3 & 1 & 365 x 292 & 23 Hz \\
+		3 & 2 & 182 x 149 & 46 Hz \\
+		3 & 3 & 121 x 99 & 60 Hz \\
+		\hline
+	\end{tabular}
+\end{figure}
+
+Drugo mjerenje je za parametar u algoritmu praćenja sfere (tablica \ref{tab:fps_maxmarches}). Varira se maksimalan broj koraka kojih zraka može napraviti prije nego algoritam označi da zraka nije ništa udarila. Povečavanjem vrijednosti varijable se smanjuje brzina iscrtavanja do neke razine, a zatim varijabla prestaje negativno utjecati na brzinu. To je zato što sve zrake dobiju dovoljno koraka na raspolaganju da dostignu do površine tijela i ostatak koraka ne iskorištavaju. Ovakvav posljedica je zato što je kamera bila okrenuta prema tijelu. Ako bi kamera gledala od tijela, zrake bi išle u beskonačnost, odnosno uvijek bi iskoristile sve dostupne korake i varijabla bi u višim vrijednostima nastavila negativno utjecati na brzinu.
+
+\begin{figure}[htb]
+	\centering
+	\caption{Performanse ovisno o maksimalnom broju koraka zrake}
+	\label{tab:fps_maxmarches}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Uređaj & Maksimalan & Brzina iscrtavanja \\
+		& broj koraka & (FPS) \\
+		\hline
+		1 & 50 & 144 Hz\\
+		1 & 100 & 144 Hz\\
+		1 & 200 & 144 Hz\\
+		1 & 400 & 144 Hz\\
+		\hline
+		2 & 50 & 31 Hz \\
+		2 & 100 & 26 Hz \\
+		2 & 200 & 24 Hz \\
+		2 & 400 & 23 Hz \\
+		\hline
+		3 & 50 & 48 Hz \\
+		3 & 100 & 42 Hz \\
+		3 & 200 & 41 Hz \\
+		3 & 400 & 41 Hz \\
+		\hline
+	\end{tabular}
+\end{figure}
+
+Treće mjerenje je za testiranje načine prikaza. Rezultati su predvidivi, kompleksniji načini su sporiji. Mala je razlika u brzini između lokalnog i globalnogo svjetljenja. No, to je zato što način globalnog osvjetljenja koristi prosijek do tada iscrtanih okvira, pa se jedan okvir ne može klasificirati kao gotova slika. 
+
+\begin{figure}[htb]
+	\centering
+	\caption{Performanse ovisno o načinu iscrtavanja}
+	\label{tab:fps_view}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Uređaj & Način prikaza & Brzina scrtavanja \\
+		 & & (FPS) \\
+		\hline
+		1 & Broj koraka & 144 Hz\\
+		1 & Normale & 144 fps \\
+		1 & Lokalno osvjetljenje & 103 Hz \\
+		1 & Globalno osvjetljenje & 64 Hz \\
+		\hline
+		2 & Broj koraka & 31 Hz \\
+		2 & Normale & 26 Hz \\
+		2 & Lokalno osvjetljenje & 14 Hz \\
+		2 & Globalno osvjetljenje & 10 Hz \\
+		\hline
+		3 & Broj koraka & 48 Hz \\
+		3 & Normale & 45 Hz \\
+		3 & Lokalno osvjetljenje & 31 Hz \\
+		3 & Globalno osvjetljenje & 22 Hz \\
+		\hline
+	\end{tabular}
+\end{figure}
 
 \section{Slike rezultata}
 
@@ -577,8 +676,6 @@ Sljedeće slike služe za prikaz rezultata rada. Vizualizirani su nekoliko frakt
     \label{slk:r2}
 \end{figure}
 
-\newpage{}
-
 \begin{figure}[htb]
 	\centering
     \includegraphics[width=0.9\linewidth]{images/r3.png}
@@ -609,8 +706,6 @@ Sljedeće slike služe za prikaz rezultata rada. Vizualizirani su nekoliko frakt
     \label{slk:r4}
 \end{figure}
 
-\newpage{}
-
 \begin{figure}[htb]
 	\centering
     \includegraphics[width=0.9\linewidth]{images/r5.png}
@@ -635,106 +730,17 @@ Sljedeće slike služe za prikaz rezultata rada. Vizualizirani su nekoliko frakt
     \label{slk:r6}
 \end{figure}
 
-\newpage{}
-
-\section{Mjerenje performansi}
-
-Ovo poglavlje služi za dokum
-
 \begin{figure}[htb]
 	\centering
-	\caption{Specifikacije uređaja za testiranje}
-	\label{tab:fps_device}
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		Uređaj & Naziv & Procesor & Grafički procesor & Maksimalna brzina \\
-		 & & (CPU) & (GPU/iGPU) & iscrtavanja (fps) \\
-		\hline
-		1 & Desktop PC & i5-14400F  & RTX 4060Ti & 144 Hz \\
-        & & @ 2.50GHz & & \\
-		\hline
-        2 & HP ProBook 650 G5 & i5-8265U  & UHD Graphics 620 & 60 Hz\\
-        & & @ 1.60GHz & & \\
-		\hline
-        3 & Redmi Note 9 & Octa-core Max  & Mali-G52 MC2 & 60 Hz\\
-        & & @ 2.00GHz & & \\
-		\hline
-	\end{tabular}
-\end{figure}
-
-\begin{figure}[htb]
-	\centering
-	\caption{Performanse ovisno o rezoluciji}
-	\label{tab:fps_resolution}
-	\begin{tabular}{|c|c|c|c|}
-		\hline
-		Uređaj & Djeljitelj & Rezolucija & Brzina scrtavanja \\
-		 & rezolucije & (širina x visina) & (fps) \\
-		\hline
-		1 & 1 & 2048 x 1131 & 144 Hz \\
-		1 & 2 & 1024 x 565 & 144 Hz \\
-		1 & 3 & 682 x 377 & 144 Hz \\
-		\hline
-		2 & 1 & 1408 x 779 & 10 Hz \\
-		2 & 2 & 704 x 389 & 34 Hz\\
-		2 & 3 & 469 x 259 & 60 Hz \\
-		\hline
-		3 & 1 & 365 x 292 & 23 Hz \\
-		3 & 2 & 182 x 149 & 46 Hz \\
-		3 & 3 & 121 x 99 & 60 Hz \\
-		\hline
-	\end{tabular}
-\end{figure}
-
-\begin{figure}[htb]
-	\centering
-	\caption{Performanse ovisno o maksimalnom broju koraka zrake}
-	\label{tab:fps_maxmarches}
-	\begin{tabular}{|c|c|c|}
-		\hline
-		Uređaj & Maksimalan & Brzina scrtavanja \\
-		& broj koraka & (fps) \\
-		\hline
-		1 & 50 & 144 Hz\\
-		1 & 100 & 144 Hz\\
-		1 & 200 & 144 Hz\\
-		\hline
-		2 & 50 & 31 Hz \\
-		2 & 100 & 26 Hz \\
-		2 & 200 & 25 Hz \\
-		\hline
-		3 & 50 & 48 Hz \\
-		3 & 100 & 42 Hz \\
-		3 & 200 & 39 Hz \\
-		\hline
-	\end{tabular}
-\end{figure}
-
-\begin{figure}[htb]
-	\centering
-	\caption{Performanse ovisno o načinu iscrtavanja}
-	\label{tab:fps_view}
-	\begin{tabular}{|c|c|c|}
-		\hline
-		Uređaj & Način prikaza & Brzina scrtavanja \\
-		 & & (fps) \\
-		\hline
-		1 & Broj koraka & 144 Hz\\
-		1 & Normale & 144 fps \\
-		1 & Lokalno osvjetljenje & 103 Hz \\
-		1 & Globalno osvjetljenje & 64 Hz \\
-		\hline
-		2 & Broj koraka & 31 Hz \\
-		2 & Normale & 26 Hz \\
-		2 & Lokalno osvjetljenje & 14 Hz \\
-		2 & Globalno osvjetljenje & 10 Hz \\
-		\hline
-		3 & Broj koraka & 48 Hz \\
-		3 & Normale & 45 Hz \\
-		3 & Lokalno osvjetljenje & 31 Hz \\
-		3 & Globalno osvjetljenje & 22 Hz \\
-		\hline
-	\end{tabular}
+    \includegraphics[width=0.9\linewidth]{images/r7.png}
+    \caption{Fraktal Kochove krivulje
+        (Parametri: 
+        \emph{Scale}: 1,
+        \emph{Spacing}: 1,
+        \emph{Inversion}: 1
+        )
+    }
+    \label{slk:r7}
 \end{figure}
 
 %--- ZAKLJUČAK / CONCLUSION ----------------------------------------------------
