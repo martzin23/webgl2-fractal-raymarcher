@@ -71,11 +71,11 @@
 \chapter{Uvod}
 \label{pog:uvod}
 
-Fraktali su zanimljivi oblici koji se često pojavljuju u prirodi a da smo toga svjesni. Mogu se opaziti na snježnoj pahuljici ili na listovima biljke. Bilo bi interesantno rekreirati i istražiti takve strukture u virtualnom okruženju.
+Fraktali su zanimljivi oblici koji se često pojavljuju u prirodi a da nismo toga svjesni. Mogu se opaziti na snježnoj pahuljici ili na listovima biljke. Bilo bi interesantno takve strukture rekonstruirati i istražti ih u virtualnom okruženju.
 
-Cilj ovog rada je izgraditi virtualnu scenu koja može prikazivati fraktale velikom razinom detalja i omogućiti korisniku kretanje kroz scenu za razgledavanje fraktala. Da bi intuitivno kretanje bilo izvedivo, brzina iscrtavanja mora biti u stvarnom vremenu, što znači da se trebaju koristiti optimizacije i treba omogućiti upravljanje kvalitetom prikaza. Dodatno bi bilo poželjno da se mogu mijenjati parametri fraktala i čak mijenjati koji se fraktali/tijela prikazuju. Za to je potrebno izgraditi korisničko sučelje za unos vrijednosti.
+Cilj ovog rada je izgraditi virtualnu scenu koja može prikazivati fraktale velikom razinom detalja i omogućiti korisniku kretanje kroz scenu za razgledavanje fraktala. Da bi intuitivno kretanje bilo izvedivo, brzina iscrtavanja mora biti u stvarnom vremenu, što znači da treba postupak optimirati i treba omogućiti upravljanje kvalitetom prikaza. Dodatno bi bilo poželjno da se mogu mijenjati parametri fraktala i čak mijenjati koji se fraktali/tijela prikazuju. Za to je potrebno izgraditi korisničko sučelje za unos vrijednosti.
 
-Dodatni fokusa rada je izvesti implementaciju koristeći \emph{WebGL2} biblioteku. Nakon iskustva korištenja tog alata se mogu usporediti njegove prednosti ili mane u odnosu na druge grafičke biblioteke u \emph{web} okolini.
+Dodatni fokusa rada je programsko ostvarenje koristeći \emph{WebGL2} biblioteku. Nakon iskustva korištenja tog alata se mogu usporediti njegove prednosti ili mane u odnosu na druge grafičke biblioteke u \emph{web} okolini.
 
 %--- GLAVNI DIO ----------------------------------------------------------------------------
 
@@ -85,16 +85,16 @@ Dodatni fokusa rada je izvesti implementaciju koristeći \emph{WebGL2} bibliotek
 \section{Funkcije udaljenosti}
 \label{podpog:funkcije_udaljenosti}
 
-Postoji više načina na koje se može zapisati neko tijelo. U računalnoj grafici se najčešće trodimenzionalni modeli opisuju mrežom trokuta. Trokuti su praktični jer imaju jednostavnu strukturu i mogu se efikasno iscrtati. Unatoč toga, postoje nedostatci takvim pristupom. Da bi se postigla zakrivljena površina, potrebno je izgraditi površinu s velikim brojem trokuta. Time površina nikad neće biti uistinu zakrivljena, nego će se sastojati od puno ravnih dijelova. Neke strukture (kao na primjer spužvaste strukture) zahtijevaju toliko veliki broj trokuta da se treba napraviti kompromis brisanjem detalja strukture radi optimizacije. Detalji se općenito dodaju modelima koristeći teksture, no u tim slućajevima stvarna geometrija još uvijek ostaje pojednostavljena.
+Postoji više načina na koje se može zapisati neko tijelo. U računalnoj grafici se najčešće trodimenzionalni modeli opisuju mrežom trokuta. Trokuti su praktični jer imaju jednostavnu strukturu i mogu se efikasno iscrtati. Unatoč tome, postoje nedostatci takvog pristupa. Kako bi se postigla zakrivljena površina, potrebno je izgraditi površinu s velikim brojem trokuta. Time površina nikad neće biti uistinu zakrivljena, nego će se sastojati od puno ravnih dijelova. Neke strukture (kao na primjer spužvaste strukture) zahtijevaju toliko veliki broj trokuta da se treba napraviti kompromis brisanjem detalja strukture radi optimizacije brzine iscrtavanja. Detalji se općenito dodaju modelima koristeći teksture, no u tim slućajevima stvarna geometrija još uvijek ostaje pojednostavljena.
 
-Način prikaza tijela koje će se razmatrati u ovom radu jer matematički opis. Specifično, ono što ovaj rad koristi su funkcije udaljenosti (\emph{eng. Signed Distance Function, SDF}). Oblik funkcije je sljedeći: $f(p)$. Gdje je $p$ točka u prostoru, a rezultat funkcije $f(p)$ je udaljenost te točke od površine tijela koju funkcija opisuje. Dimenzija prostora u kojem se treba nalaziti ulazna točka određuje funkcija. Primjer jedne takve funkcije za opis sfere je navedena ispod u jednadžbi  \eqref{eq:sdf}.
+Način prikaza tijela koje će se razmatrati u ovom radu je matematički opis. Specifično, razmatrat će ju se funkcije udaljenosti (\emph{eng. Signed Distance Function, SDF}). Funkcija ima jedan parametar $p$, gdje je $p$ točka u prostoru, a rezultat funkcije $f(p)$ je udaljenost te točke od površine tijela koju funkcija opisuje. Dimenzija prostora u kojem se nalazi ulazna točka određuje funkcija (2D ili 3D). Primjer jedne takve funkcije za opis sfere je navedena u jednadžbi \eqref{eq:sdf}.
 
 \begin{equation}
 	\label{eq:sdf}
 	f(p)_{\text{sfera}} = |centar - p| - radius
 \end{equation}
 
-Slika \ref{slk:sdf} skicira vrijednosti funkcije udaljenosti pravokutnika. Crte na slici prikazuju gdje su vrijednosti funkcije jednake (mogu se zamisliti kao izohipse na topografksoj karti). Bijela crta označuje gdje je vrijednost udaljenosti nula, odnosno površina tijela. Osim vraćanja vrijednost udaljenosti, drugo važno svojstvo funkcije je predznak rezultata. Vrijednost je pozitivna kada je točka izvan tijela (slika \ref{slk:sdf}, narančasti dio), a negativna kada je točka unutar tijela (slika \ref{slk:sdf}, plavi dio). Koristeći navedena svojstva je moguće opisati neko trodimenzionalno tijelo. Nadalje, to je i dovoljno informacija za izgraditi prikaz tog tijela.
+Slika \ref{slk:sdf} prikazuje vrijednosti funkcije udaljenosti pravokutnika. Crte na slici označavaju gdje su vrijednosti funkcije jednake, to jest mogu se zamisliti kao izohipse na topografksoj karti. Bijela crta označava gdje je vrijednost udaljenosti nula, odnosno radi se o površini tijela. Osim vraćanja vrijednost udaljenosti, drugo važno svojstvo funkcije je predznak rezultata. Vrijednost je pozitivna kada je točka izvan tijela (slika \ref{slk:sdf}, narančasti dio), a negativna kada je točka unutar tijela (slika \ref{slk:sdf}, plavi dio). Koristeći navedena svojstva je moguće opisati neko tijelo. Nadalje, to je i dovoljno informacija za izvesti prikaz tog tijela.
 
 \begin{figure}[htb]
 	\centering
@@ -106,7 +106,7 @@ Slika \ref{slk:sdf} skicira vrijednosti funkcije udaljenosti pravokutnika. Crte 
 \section{Fraktali}
 \label{podpog:fraktali}
 
-Fraktali su oblici sa svojstvom samoponavljanja. Odnosno, postoji uzorak (\emph{pattern}) ili neko svojstvo koji se ponavlja po modelu, na raznim mjestima i raznim veličinama. Nema ograničenja koliko se taj uzorak može ponavljati, što znači da je fraktal u teoriji ima beskonačno detalja. Takve fraktalne strukture se mogu pronaći u prirodi, kao na primjer stabla, lišće (slika \ref{slk:fern}) i reljef površine Zemlje.
+Fraktali su oblici sa svojstvom samoponavljanja. Odnosno, postoji uzorak (\emph{engl. pattern}) ili neko svojstvo koji se ponavlja u tijelu, na raznim mjestima i raznim veličinama. Nema ograničenja koliko se taj uzorak može ponavljati, što znači da fraktal u teoriji ima beskonačno detalja. Takve fraktalne strukture se mogu pronaći u prirodi, kao na primjer stabla, lišće (slika \ref{slk:fern}) i reljef površine Zemlje.
 
 \begin{figure}[htb]
 	\centering
@@ -115,12 +115,12 @@ Fraktali su oblici sa svojstvom samoponavljanja. Odnosno, postoji uzorak (\emph{
 	\label{slk:fern}
 \end{figure}
 
-Najčešće se koristi matematički zapis za opis jednostavnih oblika kao ravnine, sfere ili trokuta. Ako pokušavamo matematički opisati neki kompleksniji oblik kao na primjer zeca, postane očito da će to biti teško. Može se pretpostaviti da je kompleksnost formule raste s kompleksnosti oblika. No, to nije uvijek slučaj. Ispada da jednostavna formula može napraviti vrlo detaljan oblik, a dobar primjer toga su fraktali. Ovdje dođu funkcije udaljenosti do koristi jer se mogu iskoristiti za opis fraktala.
+Najčešće se koristi matematički zapis za opis jednostavnih oblika kao što su primjerice ravnine, sfere ili trokuti. Ako želimo matematički opisati neki složeniji oblik kao na primjer zeca, očito je da će to biti teško. Može se pretpostaviti da složenost izraza koji opisuje taj fraktal raste s složenošću oblika. No, to nije uvijek slučaj. Naime, jednostavna matematički izraz može definirati vrlo složen i detaljan oblik, a dobar primjer su fraktali. Stoga će se u ovom radu koristiti funkcija udaljenosti za opis fraktala.
 
 \section{Algoritam iscrtavanja}
 \label{podpog:algoritam_iscrtavanja}
 
-Cilj je postići prikaz fraktala. Potreban je algoritam koji uzima opis tijela u obliku funkcije udaljenosti i omogućuje za iscrtavanje trodimenzionalnog prikaza tog tijela na ekranu. Koristit će se metoda praćenja sfere, što je podvrsta metode koračenja zrake, što je još podvrsta metode praćenja zrake. Metoda praćenja zrake (\emph{engl. Ray Tracing}) određuje boju svakog piksela pomoću zrake koja počinje u očištu kamere i prolazi kroz taj piksel. Metoda koračenja (\emph{engl. Ray Marching}) zrake koristi definiranu zraku tako da postepeno korači u smjeru zrake tijekom računanja. Praćenje sfere (\emph{engl. Sphere Tracing}) dalje definira koračenje tako da je duljina svakog koraka određena na temelju funkcije udaljenosti. Prikazivanjem svakog skoka i pripadajuće vrijednosti udaljenosti se dobivamo vizualizaciju sfera (ili kružnica ako se gleda u 2D prostoru), što se može vidjeti na slici \ref{slk:spheretracing}.
+Cilj je grafički prikazati fraktale. Potrebno je osmisliti algoritam koji uzima opis tijela u obliku funkcije udaljenosti i omogućuje iscrtavanje trodimenzionalnog prikaza tog tijela na ekranu. Koristi se metoda praćenja sfere (\emph{engl. Sphere Tracing}), što je podvrsta metode marširanja zrake (\emph{engl. Ray Marching}), što je još podvrsta metode praćenja zrake (\emph{engl. Ray Tracing}). Metoda praćenja zrake određuje boju svakog piksela pomoću zrake koja počinje u očištu kamere i prolazi kroz taj piksel. Metoda marširanja zrake koristi definiranu zraku tako da postepeno korača (maršira) u smjeru zrake tijekom računanja. Praćenje sfere dalje definira koračanje tako da je duljina svakog koraka određena na temelju funkcije udaljenosti. Prikazivanjem svakog koraka i pripadajuće vrijednosti udaljenosti vizualizira se sfera (ili kružnica ako se gleda u 2D prostoru), što se može vidjeti na slici \ref{slk:spheretracing}.
 
 \begin{figure}[htb]
 	\centering
@@ -129,7 +129,7 @@ Cilj je postići prikaz fraktala. Potreban je algoritam koji uzima opis tijela u
 	\label{slk:spheretracing}
 \end{figure}
 
-Ispod je naveden pseudo kod (Algoritam \ref{alg:spheretracing}) koji opisuje postupak metode praćenja sfere. U svakoj iteraciji petlje se računa udaljenost s pomoću funkcije udaljenosti i obavi se korak duljine te udaljenosti u smjeru zrake. Petlja završava kada je zraka dotaknula tijelo ili kada prođe granicu maksimalnog broja koraka. Potrebno se zadati granicu koraka zbog slučaja kada zraka ne udari tijelo, nego nastavi koračiti u beskonačnost. Zbog nepreciznosti brojeva s pomičnim zarezom može doći do slučaja da zraka nikada ne dođe do udaljenosti nula od tijela. Stoga se u uvjet dodira dodaje varijabla \emph{epsilon}, koja ima vrijednost vrlo malog broja. 
+Algoritam \ref{alg:spheretracing} opisuje postupak metode praćenja sfere. U svakoj iteraciji petlje se računa udaljenost s pomoću funkcije udaljenosti i obavi se korak duljine te udaljenosti u smjeru zrake. Petlja završava kada je zraka dotaknula tijelo ili kada prođe granicu maksimalnog broja koraka. Potrebno je zadati granicu koraka u slučaju kada zraka ne udari tijelo, nego nastavi koračiti u beskonačnost. Zbog nepreciznosti brojeva s pomičnim zarezom može doći do slučaja da zraka nikada ne dođe do udaljenosti nula od tijela. Stoga se u uvjet dodira dodaje tolerancija \emph{epsilon}, koja ima vrijednost vrlo malog broja. 
 
 \newpage{}
 
@@ -150,13 +150,13 @@ pracenje_sfere(org, dir, max, epsilon) {
 }
 \end{lstlisting}
 
-\chapter{Programska implementacija}
+\chapter{Program za prikaz fraktala}
 \label{pog:implementacija}
 
 \section{Korišteni alati}
 \label{podpog:koristeni_alati}
 
-Primarni alat koji je korišten za ovaj rad je biblioteka \emph{WebGL2}. To je varijanta popularne grafičke biblioteke OpenGL koja je prilagođena za rad na internetskom pregledniku i jeziku \emph{JavaScript}. Mogućnost korištenja grafičkih funkcija na internetskom pregledniku ima mnoge prednosti: omogućuje grafičke vizualizacije unutar web stranica, izradu video igara koje su dostupne bez instaliranja izvršne datoteke i generalni pristup procesorne moći grafičke kartice unutar \emph{JavaScript}. \emph{WebGL2} nije sasvim identičan OpenGL, jedna bitna razlika je što ne omogućuje izradu računskih sjenčara (\emph{engl. compute shaders}). Takvi sjenčari su pogodni za iscrtavanje temeljenom zrakama kao praćenje sfera, no moguće je izvesti takvo iscrtavanje koristeći sjenčare fragmenta.
+Primarni alat koji je korišten za ovaj rad je biblioteka \emph{WebGL2}. To je varijanta popularne grafičke biblioteke \emph{OpenGL} koja je prilagođena za rad na internetskom pregledniku i jeziku \emph{JavaScript}. Mogućnost korištenja grafičkih funkcija na internetskom pregledniku ima mnoge prednosti: omogućuje grafičke vizualizacije unutar web stranica, izradu video igara koje su dostupne bez instaliranja izvršne datoteke i generalni pristup procesorne moći grafičke kartice unutar \emph{JavaScript}. \emph{WebGL2} nije sasvim identičan OpenGL, jedna bitna razlika je što ne omogućuje izradu računskih sjenčara (\emph{engl. compute shaders}). Takvi sjenčari su pogodni za iscrtavanje temeljenom zrakama kao praćenje sfera, no moguće je izvesti takvo iscrtavanje koristeći sjenčare fragmenta.
 
 Kao što je već spomenuto, programski jezik koji se koristi je \emph{JavaScript}. \emph{JavaScript} ima svojih prednosti što se tiče grafičkih aplikacija: zajedno s \emph{HTML} i \emph{CSS} pruža jednostavan i fleksibilan način izrade korisničkog sučelja za upravljanje programom. Implementacija grafičkih sučelja u drugim jezicima kao \emph{C++} bi bila znatno teža i bilo bi potrebno koristiti biblioteke kao na primjer \emph{Dear ImGui} \cite{imgui}, što ima manju fleksibilnost u dizajnu. Dodatno, web aplikacije su orijentirane na portabilan dizajn na način da jedna stranica može raditi na više vrsta uređaja. To uključuje i ovaj projekt: prikaz fraktala se može otvoriti na mobitelu, a sučelje se prilagođava na orijentaciju i veličinu ekrana. Naravno, kvaliteta i brzina iscrtavanja će ovisiti o grafičkom procesoru uređaja na kojem se izvodi.
 
@@ -762,7 +762,7 @@ Ovaj rad se bavi vizualizacijom fraktala. Objasni se osnovna teorija o fraktalim
 \end{sazetak}
 
 \begin{kljucnerijeci}
-  fraktali; WebGL2; koračenje zrakom; praćenje sfera; funkcija udaljenosti; vizualizacija
+  fraktali; WebGL2; marširanje zrakom; praćenje sfera; funkcija udaljenosti; vizualizacija
 \end{kljucnerijeci}
 
 % Abstract in English
