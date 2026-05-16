@@ -200,7 +200,7 @@ pracenje_sfere(org, dir, max, epsilon) {
 
 Primarni alat koji je korišten za ovaj rad je biblioteka \emph{WebGL2}. To je varijanta popularne grafičke biblioteke \emph{OpenGL} koja je prilagođena za rad na internetskom pregledniku i jeziku \emph{JavaScript}. Mogućnost korištenja grafičkih funkcija u internetskom pregledniku ima mnoge prednosti: omogućuje grafičke vizualizacije unutar web stranica, izradu video igara koje su dostupne bez instaliranja izvršne datoteke i generalni pristup procesorske moći grafičke kartice unutar jezika \emph{JavaScript}. Biblioteka \emph{WebGL2} nije sasvim identična \emph{OpenGL}, a jedna bitna razlika je što ne omogućuje izradu računskih sjenčara (\emph{engl. compute shaders}). Takvi sjenčari su pogodni za iscrtavanje postupcima temeljenim zrakama kao praćenje sfera, no moguće je izvesti takvo iscrtavanje koristeći sjenčare fragmenta.
 
-Programski jezik \emph{JavaScript} ima svojih prednosti što se tiče grafičkih aplikacija jer zajedno s alatima za prikaz web stranica \emph{HTML} i \emph{CSS} pruža jednostavan i prilagodljiv način izrade korisničkog sučelja za upravljanje programom. Programska implementacija grafičkih sučelja u drugim jezicima kao što je primjerice \emph{C++} bi bila znatno teža i bilo bi potrebno koristiti biblioteke kao na primjer \emph{Dear ImGui} \cite{imgui}, koja ima manju fleksibilnost u dizajnu. Dodatno, web aplikacije su orijentirane na portabilan dizajn tako da neka web stranica može raditi na više vrsta uređaja. To uključuje i ovaj projekt: prikaz fraktala se može otvoriti na računalu, ali i na mobitelu, a sučelje se prilagođava na orijentaciju i veličinu ekrana. Naravno, kvaliteta i brzina iscrtavanja će ovisiti o grafičkom procesoru uređaja na kojem se izvodi.
+Programski jezik \emph{JavaScript} ima svojih prednosti što se tiče grafičkih aplikacija jer s alatima za prikaz web stranica \emph{HTML} i \emph{CSS} pruža jednostavan i prilagodljiv način izrade korisničkog sučelja za upravljanje programom. Programska implementacija grafičkih sučelja u drugim jezicima kao što je primjerice \emph{C++} bi bila znatno teža i bilo bi potrebno koristiti biblioteke kao na primjer \emph{Dear ImGui} \cite{imgui}, koja ima manju fleksibilnost u dizajnu. Dodatno, web aplikacije su orijentirane na portabilan dizajn tako da neka web stranica može raditi na više vrsta uređaja. To uključuje i ovaj projekt: prikaz fraktala se može otvoriti na računalu, ali i na mobitelu, a sučelje se prilagođava na orijentaciju i veličinu ekrana. Naravno, kvaliteta i brzina iscrtavanja će ovisiti o grafičkom procesoru uređaja na kojem se izvodi.
 
 Aplikaciji se može pristupiti na poslužitelju \emph{GitHub Pages}. To je praktično jer se prilikom izrade aplikacije \emph{Github} koristio za kontrolu verzija pa se izvorni tekst programa već nalazi na toj platformi. Platforma \emph{GitHub Pages} pruža statičko posluživanje, tj. program se izvodi na klijentu, a ne na poslužitelju, što je sasvim dovoljno za ovaj program.
 
@@ -231,7 +231,7 @@ Klasa \emph{Camera} služi za čuvanje informacija potrebnih za inicijalizaciju 
 \section{Postupak iscrtavanja}
 \label{podpog:postupak_iscrtavanja}
 
-Iscrtavanje je stvaranje slike virtualne scene koja se prikazuje na ekranu. Za scene s ciljem prikaza u stvarnom vremenu, frekvencija iscrtavanja mora biti dovoljno velika. Radi brzine, veliki dio postupka iscrtavanja je izveden sklopovski i postoji definirani grafički protočni sustav kojeg se treba pridržavati da bi se nacrtao neki 3D model. Prilikom korištenja biblioteke \emph{WebGL2} potrebno je obavezno definirati barem sjenčara geometrije (\emph{engl. vertex shader}) i sjenčara fragmenta (\emph{engl. fragment shader}). U ovome slučaju, modeli koje želimo prikazati se ne sastoje od trokuta i nije potrebna geometrijska faza. Bilo bi praktično koristiti računske sjenčare (\emph{engl. compute shaders}), no kao što je već navedeno, biblioteka \emph{WebGL2} ne omogućuje izradu računskih sjenčara. Stoga je postupak iscrtavanja izveden onime što nam je na raspolaganju i što se može koristiti u okviru bibliotke. U nastavku su objašnjeni postupci iscrtavanja u sastavljenom programu i navedeni su ključni objekti koji se koriste pri iscrtavanju. Slika \ref{slk:pipeline} prikazuje redoslijed grafičkih programa i objekte koji se opisuju.
+Iscrtavanje je stvaranje slike virtualne scene koja se prikazuje na ekranu. Za scene s ciljem prikaza u stvarnom vremenu, frekvencija iscrtavanja mora biti dovoljno velika. Radi brzine, veliki dio postupka iscrtavanja je izveden sklopovski i postoji definirani grafički protočni sustav kojeg se treba pridržavati da bi se nacrtao neki 3D model. Prilikom korištenja biblioteke \emph{WebGL2} potrebno je obavezno definirati barem sjenčara geometrije (\emph{engl. vertex shader}) i sjenčara fragmenta (\emph{engl. fragment shader}). U ovome slučaju, modeli koje želimo prikazati se ne sastoje od trokuta i nije potrebna geometrijska faza. Bilo bi praktično koristiti računske sjenčare (\emph{engl. compute shaders}), no kao što je već navedeno, biblioteka \emph{WebGL2} ne omogućuje izradu računskih sjenčara. Stoga je postupak iscrtavanja izveden onime što nam je na raspolaganju i što se može koristiti u okviru biblioteke. U nastavku su objašnjeni postupci iscrtavanja u sastavljenom programu i navedeni su ključni objekti koji se koriste pri iscrtavanju. Slika \ref{slk:pipeline} prikazuje redoslijed grafičkih programa i objekte koji se opisuju.
 
 Crtanje jednog okvira se izvodi u dva poziva na crtanje (\emph{engl. draw calls}). U svakom pozivu na crtanje se izvodi standardna grafička protočna struktura: sjenčar geometrije se iterira po točkama modela, a sjenčar fragmenata se iterira po fragmentima. Jedini pravi model koji se koristi je kvadrat (dva trokuta) koji pokriva cijeli ekran. Geometrijski sjenčar samo prosljeđuje pozicije točaka modela kvadrata. Model i geometrijski sjenčar su identični za oba poziva za crtanje. Gotovo sva logika koja se opisuje je u sjenčarima fragmenta.
 
@@ -269,7 +269,7 @@ Sučelje je podijeljeno u četiri kartice: generalne postavke, postavke vezane u
 \section{Unos funkcije}
 \label{podpog:unos_funkcije}
 
-Funkcija udaljenosti se unosi u tekstualni okvir u obliku izvornog teksa programa u programskom jeziku \emph{GLSL}. Biblioteka \emph{WebGL2} koristi programski jezik \emph{GLSL} za sjenčare. Nakon unosa programskog koda treba se pokrenuti kompajliranje kako bi se unešeni programski kod primijenio. Prvo se izbriše postojeći program sjenčar kojeg biblioteka \emph{WebGL2} koristi za iscrtavanje. Zatim se unešeni izvorni kod u obliku teksta spoji s izvornim tekstom programa ostatka sjenčara fragmenta. Konačno se novi spojeni izvorni kod pošalje grafičkoj kartici, kompajlira se i stvori se novi program za iscrtavanje. Ako dođe do greške prilikom kompajliranja (kao na primjer sintaksna greška unesenog koda), ispisat će se poruka koja daje informaciju o greški radi jednostavnijeg popravljanja koda. 
+Funkcija udaljenosti se unosi u tekstualni okvir u obliku izvornog teksta programa u programskom jeziku \emph{GLSL}. Biblioteka \emph{WebGL2} koristi programski jezik \emph{GLSL} za sjenčare. Nakon unosa programskog koda treba se pokrenuti kompajliranje kako bi se uneseni programski kod primijenio. Prvo se izbriše postojeći program sjenčar kojeg biblioteka \emph{WebGL2} koristi za iscrtavanje. Zatim se uneseni izvorni kod u obliku teksta spoji s izvornim tekstom programa ostatka sjenčara fragmenta. Konačno se novi spojeni izvorni kod pošalje grafičkoj kartici, kompajlira se i stvori se novi program za iscrtavanje. Ako dođe do greške prilikom kompajliranja (kao na primjer sintaksna greška unesenog koda), ispisat će se poruka koja daje informaciju o greški radi jednostavnijeg popravljanja koda. 
 
 Zadana funkcija udaljenosti koja se koristi kada se pokrene program je navedena u algoritmu \ref{alg:sdf2} . To je ujedno i implementacija izraza \ref{eq:sdf} iz potpoglavlja \ref{podpog:funkcije_udaljenosti} za oblik sfere. Sfera se nalazi u centru koordinatnog sustava i radius sfere poprima vrijednost varijable \emph{uniforms.custom\_b}. Program ima nekoliko uniformnih varijabli sjenčara koje su namijenjene za korištenje u funkcijama udaljenosti (u to je uključena varijabla \emph{uniforms.custom\_b}). Te varijable omogućuju podešavanje vrijednosti proizvoljnih brojeva u funkciji kroz sučelje tako da nije potrebno ponovno prevođenje koda nakon svake promjene.
 
@@ -518,7 +518,7 @@ void main() {
 
 \subsection{Globalno osvjetljenje}
 
-Zadnji, četvrti način prikaza je globalno osvjetljenje (slika \ref{slk:pathtraced}). Koristi se pojednostavljeni algoritam praćenja putanje zrake (\emph{engl. path tracing}) s ping-pong spremnikom. Kada zraka dođe do površine, odbije se u nasumičnom smjeru i nastavi se odbijati dok ne prijeđe maksimalan broj odbijanja (rezultat je crna boja) ili otiđe u nebo (rezultat je boja neba u tom smjeru) (algoritam na slici \ref{alg:pathtraced}). Rezultat je prosijek svih boja koje su dobivene za dani piksel. Kako je ovaj postupak računski intenzivan, radi responzivnosti i optimizacije računa se prosjek između prošlog i trenutačnog okvira koji se iscrtava. Time treba manje vremena za izračun pojedinog okvira, a slika se postepeno razvija u bolji rezultat što se duže program iscrtava.
+Zadnji, četvrti način prikaza je globalno osvjetljenje (slika \ref{slk:pathtraced}). Koristi se pojednostavljeni algoritam praćenja putanje zrake (\emph{engl. path tracing}) s ping-pong spremnikom. Kada zraka dođe do površine, odbije se u nasumičnom smjeru i nastavi se odbijati dok ne prijeđe maksimalan broj odbijanja (rezultat je crna boja) ili otiđe u nebo (rezultat je boja neba u tom smjeru) (algoritam na slici \ref{alg:pathtraced}). Rezultat je prosjek svih boja koje su dobivene za dani piksel. Kako je ovaj postupak računski intenzivan, radi responzivnosti i optimizacije računa se prosjek između prošlog i trenutačnog okvira koji se iscrtava. Time treba manje vremena za izračun pojedinog okvira, a slika se postepeno razvija u bolji rezultat što se duže program iscrtava.
 
 \begin{figure}[htb]
 	\centering
@@ -569,7 +569,7 @@ Aplikacija se izvodi na web pregledniku i kompatibilna je s mobilnim uređajima.
 
 \section{Mjerenje brzine izvođenja programa}
 
-Ispitivanje je provedeno na tri uređaja. Tablica \ref{tab:fps_device} prikazuje specifikacije uređaja. Postoje slučajevi kada brzina iscrtavanja prestaje rasti i ostane konstantna. To je zato što internetski preglednik automatski ograniči brzinu iscrtavanja na brzinu osvježavanja ekrana. U svakom testu koriste se sve zadane postavke i vrijednosti varijabli, osim varijable koja se u testu mijenja mijenja i odabrana funkcija udaljenosti (u svakom testu je odabran fraktal \emph{mandelbox}). Za ispitivanje su odabrane varijable za koje se očekuje da imaju značajan utjecaj na performanse, a to su djelitelj rezolucije, maksimalan broj koraka zrake i način prikaza. S obzirom na to da je soženost programa najveća unutar sjenčara, očekivano je da će performanse najviše ovisiti o grafičkom procesoru uređaja.
+Ispitivanje je provedeno na tri uređaja. Tablica \ref{tab:fps_device} prikazuje specifikacije uređaja. Postoje slučajevi kada brzina iscrtavanja prestaje rasti i ostane konstantna. To je zato što internetski preglednik automatski ograniči brzinu iscrtavanja na brzinu osvježavanja ekrana. U svakom testu koriste se sve zadane postavke i vrijednosti varijabli, osim varijable koja se u testu mijenja i odabrana funkcija udaljenosti (u svakom testu je odabran fraktal \emph{mandelbox}). Za ispitivanje su odabrane varijable za koje se očekuje da imaju značajan utjecaj na performanse, a to su djelitelj rezolucije, maksimalan broj koraka zrake i način prikaza. S obzirom na to da je složenost programa najveća unutar sjenčara, očekivano je da će performanse najviše ovisiti o grafičkom procesoru uređaja.
 
 \begin{figure}[htb]
 	\centering
@@ -593,6 +593,8 @@ Ispitivanje je provedeno na tri uređaja. Tablica \ref{tab:fps_device} prikazuje
 \end{figure}
 
 Prvo mjerenje uključuje podešavanje veličine rezolucije iscrtavanja (tablica \ref{tab:fps_resolution}). U ovom slučaju rezolucija ne znači veličinu ekrana, nego se odnosi specifično na vrijednosti prozora za prikaz (\emph{engl. viewport}) \emph{WebGL2} programa za prvi poziv na iscrtavanje. Iz rezultata se vidi da rezolucija ima veliki utjecaj na brzinu iscrtavanja. To je zato što se algoritam nalazi u sjenčaru fragmenta koji se izvodi za svaki piksel slike.
+
+\newpage{}
 
 \begin{figure}[htb]
 	\centering
@@ -618,7 +620,7 @@ Prvo mjerenje uključuje podešavanje veličine rezolucije iscrtavanja (tablica 
 	\end{tabular}
 \end{figure}
 
-Drugo mjerenje osnosi se na parametar u algoritmu praćenja sfere (tablica \ref{tab:fps_maxmarches}). Mijenja se maksimalan broj koraka kojih zraka može obaviti prije nego algoritam zaključi da zraka nije naišla na prepreku. Povećavanjem vrijednosti varijable se smanjuje brzina iscrtavanja do neke razine, a zatim varijabla prestaje negativno utjecati na brzinu. To je zato što sve zrake imaju dovoljno koraka na raspolaganju da stignu do površine tijela i ostatak koraka ne koriste. To se događa zato što je kamera bila okrenuta prema tijelu. Ako bi kamera gledala od tijela, zrake bi išle u beskonačnost, odnosno uvijek bi iskoristile sve dostupne korake i varijabla bi u višim vrijednostima nastavila negativno utjecati na brzinu.
+Drugo mjerenje odnosi se na parametar u algoritmu praćenja sfere (tablica \ref{tab:fps_maxmarches}). Mijenja se maksimalan broj koraka kojih zraka može obaviti prije nego algoritam zaključi da zraka nije naišla na prepreku. Povećavanjem vrijednosti varijable se smanjuje brzina iscrtavanja do neke razine, a zatim varijabla prestaje negativno utjecati na brzinu. To je zato što sve zrake imaju dovoljno koraka na raspolaganju da stignu do površine tijela i ostatak koraka ne koriste. To se događa zato što je kamera bila okrenuta prema tijelu. Ako bi kamera gledala od tijela, zrake bi išle u beskonačnost, odnosno uvijek bi iskoristile sve dostupne korake i varijabla bi u višim vrijednostima nastavila negativno utjecati na brzinu.
 
 \begin{figure}[htb]
 	\centering
@@ -647,7 +649,7 @@ Drugo mjerenje osnosi se na parametar u algoritmu praćenja sfere (tablica \ref{
 	\end{tabular}
 \end{figure}
 
-Treće mjerenje se odnosi na ispitvanje načina prikaza. Rezultati su bili predvidivi, tj. složeniji načini su naravno sporiji. Jedino se ističe mala je razlika u brzini između lokalnog i globalnog osvjetljenja. No, to je zato što način globalnog osvjetljenja koristi prosjek do tada iscrtanih okvira pa se jedan okvir ne može klasificirati kao gotova slika. 
+Treće mjerenje se odnosi na ispitivanje načina prikaza. Rezultati su bili predvidivi, tj. složeniji načini su naravno sporiji. Jedino se ističe mala je razlika u brzini između lokalnog i globalnog osvjetljenja. No, to je zato što način globalnog osvjetljenja koristi prosjek do tada iscrtanih okvira pa se jedan okvir ne može klasificirati kao gotova slika. 
 
 \begin{figure}[htb]
 	\centering
@@ -788,7 +790,7 @@ Može se zaključiti da je korištena grafička biblioteka \emph{WebGL2} dovoljn
 
 Najteže je bilo ostvariti korisničko sučelje. Nije korištena biblioteka za \emph{widgete}, stoga su svi ulazni elementi ostvareni u okviru ovog rada. Trebalo je ostvariti sinkronizaciju vrijednosti varijabli u sučelju s pripadajućim vrijednostima uniformnih varijabli u sjenčarima. Kontrole na mobilnim uređajima su bile neintuitivne za izvesti zato što su na raspolaganju dostupne samo informacije točaka prstiju koji diraju ekran. 
 
-Postoji prostor za proširenja i program se može unaprijediti na više načina. U programu je moguće lako mijenjati veličinu rezolucije koja se iscrtava, no bilo bi praktično da se rezolucija automatski prilagođava. Na primjer, kada se kamera kreće, mogla bi se smanjiti rezolucija tako da se brže iscrtava scena te bi kretanje bilo glatko. A kada kamera stoji mirno, rezolucija bi se mogla povećati kako bi slika bila oštrija. \todo{Još se može implementirati prikaz više funkcija udaljenosti odjednom i korištenje operacija unije, razlika ili presjeka nad njima. }
+Postoji prostor za proširenja i program se može unaprijediti na više načina. U programu je moguće lako mijenjati veličinu rezolucije koja se iscrtava, no bilo bi praktično da se rezolucija automatski prilagođava. Na primjer, kada se kamera kreće, mogla bi se smanjiti rezolucija tako da se brže iscrtava scena te bi kretanje bilo glatko. A kada kamera stoji mirno, rezolucija bi se mogla povećati kako bi slika bila oštrija.
 
 %--- LITERATURA / REFERENCES ---------------------------------------------------
 
@@ -800,7 +802,7 @@ Postoji prostor za proširenja i program se može unaprijediti na više načina.
 
 % Sažetak na hrvatskom
 \begin{sazetak}
-Ovaj rad se bavi vizualizacijom fraktala. Navedena je osnovna teorija o fraktalima, funkcijama udaljenosti koje se koriste za njihov opis te algoritam praćenja sfere za iscrtavanje tih funkcija. Program je ostvaren u programskom jeziku \emph{JavaScript} koristeći biblioteku \emph{WebGL2} unutar internetskog preglednika. Opisana je strutkura programskog koda, postupak iscrtavanja i korisničko sučelje koje je ostvareno koristeći alate za prikaz web stranica \emph{HTML} i \emph{CSS}. Istraženi su načini pretvorbe podataka iz algoritma praćenja sfere u sliku za prikaz na ekranu i provedena su mjerenja performansi programa.
+Ovaj rad se bavi vizualizacijom fraktala. Navedena je osnovna teorija o fraktalima, funkcijama udaljenosti koje se koriste za njihov opis te algoritam praćenja sfere za iscrtavanje tih funkcija. Program je ostvaren u programskom jeziku \emph{JavaScript} koristeći biblioteku \emph{WebGL2} unutar internetskog preglednika. Opisana je struktura programskog koda, postupak iscrtavanja i korisničko sučelje koje je ostvareno koristeći alate za prikaz web stranica \emph{HTML} i \emph{CSS}. Istraženi su načini pretvorbe podataka iz algoritma praćenja sfere u sliku za prikaz na ekranu i provedena su mjerenja performansi programa.
 \end{sazetak}
 
 \begin{kljucnerijeci}
@@ -809,7 +811,7 @@ Ovaj rad se bavi vizualizacijom fraktala. Navedena je osnovna teorija o fraktali
 
 % Abstract in English
 \begin{abstract}
-This paper deals with the visualization of fractals. It explains the basic theory of fractals, distance functions used for their description, and the sphere tracing algorithm for rendering these functions. It then goes through the program implementation written in \emph{JavaScript} using the \emph{WebGL2} library within a web browser. It breaks down the code organization, rendering process, and describes the user interface implemented using \emph{HTML} and \emph{CSS}. It explores methods of converting data from the sphere tracing algorithm into an image that is displayed on the screen. Finally, some performance measurements of the program are carried out.
+This paper deals with the visualization of fractals. The basic theory of fractals is presented, along with the distance functions used to describe them and the sphere tracing algorithm for rendering those functions. The program was implemented in the \emph{JavaScript} programming language using the \emph{WebGL2} library within a web browser. The structure of the program code, the rendering process, and the user interface implemented using the web page display tools \emph{HTML} and \emph{CSS} are described. Methods for converting data from the sphere tracing algorithm into an image for display on screen are explored, and performance measurements of the program are conducted.
 \end{abstract}
 
 \begin{keywords}
