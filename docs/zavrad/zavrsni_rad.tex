@@ -3,32 +3,20 @@
 % Add the option upload to generate the final version which is uploaded to FERWeb
 \usepackage{blindtext}
 
-\usepackage{listings}
-\lstset{
-    basicstyle=\ttfamily\footnotesize\linespread{0.9}\selectfont,
-    lineskip=-0.5pt,
-	frame=single,
-    breaklines=true,
-}
-\renewcommand{\lstlistingname}{Algoritam}
-
 \usepackage{xcolor}
 \newcommand{\todo}[1]{{\textcolor{red}{[#1]}}}
 
 \usepackage{verbatim}
 \usepackage{mdframed}
+\usepackage{float}
+
 \newenvironment{code}[2]{
     \def\codecaption{#1}
     \def\codelabel{#2}
-    \figure[htb]
+    \figure[h]
     \centering
-    \mdframed[
-    linewidth=0.8pt,
-    innerleftmargin=8pt,
-    innerrightmargin=8pt,
-    innertopmargin=6pt,
-    innerbottommargin=6pt
-    ]
+    \mdframed[linewidth=0.8pt]
+    \footnotesize
     \verbatim
 }{
     \endverbatim
@@ -37,14 +25,6 @@
     \label{\codelabel}
     \endfigure
 }
-
-% \newenvironment{code}[2]{
-%     \def\codecaption{#1}
-%     \def\codelabel{#2}
-%     \lstlisting[caption=\codecaption, label=\codelabel]
-% }{
-%     \endlstlisting
-% }
 
 %--- PODACI O RADU / THESIS INFORMATION ----------------------------------------
 
@@ -98,20 +78,6 @@
 
 \chapter{Uvod}
 \label{pog:uvod}
-
-% \begin{tcolorbox}[colback=white, colframe=black]
-% \begin{verbatim}
-% def hello():
-%     print("Hello, World!")
-% \end{verbatim}
-% \end{tcolorbox}
-
-\begin{code}{test}{slk:test}
-def hello():
-    print("Hello, World!")
-
-hello()
-\end{code}
 
 Fraktali su zanimljivi oblici koji se često pojavljuju u prirodi a da nismo toga svjesni. Mogu se opaziti na snježnoj pahuljici ili na listovima biljke. Bilo bi interesantno takve strukture rekonstruirati i istražiti ih u virtualnom okruženju.
 
@@ -171,26 +137,27 @@ Cilj je grafički prikazati fraktale. Potrebno je osmisliti algoritam koji uzima
 	\label{slk:spheretracing}
 \end{figure}
 
-Algoritam \ref{alg:spheretracing} opisuje postupak metode praćenja sfere. U svakoj iteraciji petlje se računa udaljenost s pomoću funkcije udaljenosti i obavi se korak duljine te udaljenosti u smjeru zrake. Petlja završava kada je zraka dotaknula tijelo ili kada prođe granicu maksimalnog broja koraka. Potrebno je zadati granicu koraka u slučaju kada zraka ne udari tijelo, nego nastavi koračati u beskonačnost. Zbog nepreciznosti brojeva s pomičnim zarezom može doći do slučaja da zraka nikada ne dođe do udaljenosti nula od tijela. Stoga se u uvjet dodira dodaje tolerancija \emph{epsilon}, koja ima vrijednost vrlo malog broja. 
+Algoritam na slici \ref{alg:spheretracing} opisuje postupak metode praćenja sfere. U svakoj iteraciji petlje se računa udaljenost s pomoću funkcije udaljenosti i obavi se korak duljine te udaljenosti u smjeru zrake. Petlja završava kada je zraka dotaknula tijelo ili kada prođe granicu maksimalnog broja koraka. Potrebno je zadati granicu koraka u slučaju kada zraka ne udari tijelo, nego nastavi koračati u beskonačnost. Zbog nepreciznosti brojeva s pomičnim zarezom može doći do slučaja da zraka nikada ne dođe do udaljenosti nula od tijela. Stoga se u uvjet dodira dodaje tolerancija \emph{epsilon}, koja ima vrijednost vrlo malog broja. 
 
 \newpage{}
 
-\begin{lstlisting}[caption=Algoritam praćenja sfere, label=alg:spheretracing]
+
+\begin{code}{Algoritam praćenja sfere}{alg:spheretracing}
 pracenje_sfere(org, dir, max, epsilon) {
-	// org - ishodiste zrake
-	// dir - smjer zrake
-	// max - maksimalan broj koraka
-	// epsilon - vrlo mali broj
-	pos = org
-	for (count = 0; count < max; count++) {
-		dist = sdf(pos) // funkcija udaljenosti
-		if (dist < epsilon)
-			break;
-		pos += dir * dist
-	}
-	return pos
+    // org - ishodiste zrake
+    // dir - smjer zrake
+    // max - maksimalan broj koraka
+    // epsilon - vrlo mali broj
+    pos = org
+    for (count = 0; count < max; count++) {
+        dist = sdf(pos) // funkcija udaljenosti
+        if (dist < epsilon)
+            break;
+        pos += dir * dist
+    }
+    return pos
 }
-\end{lstlisting}
+\end{code}
 
 \chapter{Program za prikaz fraktala}
 \label{pog:implementacija}
@@ -271,14 +238,14 @@ Sučelje je podijeljeno u četiri kartice: generalne postavke, postavke vezane u
 
 Funkcija udaljenosti se unosi u tekstualni okvir u obliku izvornog teksta programa u programskom jeziku \emph{GLSL}. Biblioteka \emph{WebGL2} koristi programski jezik \emph{GLSL} za sjenčare. Nakon unosa programskog koda treba se pokrenuti kompajliranje kako bi se uneseni programski kod primijenio. Prvo se izbriše postojeći program sjenčar kojeg biblioteka \emph{WebGL2} koristi za iscrtavanje. Zatim se uneseni izvorni kod u obliku teksta spoji s izvornim tekstom programa ostatka sjenčara fragmenta. Konačno se novi spojeni izvorni kod pošalje grafičkoj kartici, kompajlira se i stvori se novi program za iscrtavanje. Ako dođe do greške prilikom kompajliranja (kao na primjer sintaksna greška unesenog koda), ispisat će se poruka koja daje informaciju o greški radi jednostavnijeg popravljanja koda. 
 
-Zadana funkcija udaljenosti koja se koristi kada se pokrene program je navedena u algoritmu \ref{alg:sdf2} . To je ujedno i implementacija izraza \ref{eq:sdf} iz potpoglavlja \ref{podpog:funkcije_udaljenosti} za oblik sfere. Sfera se nalazi u centru koordinatnog sustava i radius sfere poprima vrijednost varijable \emph{uniforms.custom\_b}. Program ima nekoliko uniformnih varijabli sjenčara koje su namijenjene za korištenje u funkcijama udaljenosti (u to je uključena varijabla \emph{uniforms.custom\_b}). Te varijable omogućuju podešavanje vrijednosti proizvoljnih brojeva u funkciji kroz sučelje tako da nije potrebno ponovno prevođenje koda nakon svake promjene.
+Zadana funkcija udaljenosti koja se koristi kada se pokrene program je navedena u slici \ref{alg:sdf}. To je ujedno i implementacija izraza \ref{eq:sdf} iz potpoglavlja \ref{podpog:funkcije_udaljenosti} za oblik sfere. Sfera se nalazi u centru koordinatnog sustava i radius sfere poprima vrijednost varijable \emph{uniforms.custom\_b}. Program ima nekoliko uniformnih varijabli sjenčara koje su namijenjene za korištenje u funkcijama udaljenosti (u to je uključena varijabla \emph{uniforms.custom\_b}). Te varijable omogućuju podešavanje vrijednosti proizvoljnih brojeva u funkciji kroz sučelje tako da nije potrebno ponovno prevođenje koda nakon svake promjene.
 
-\begin{lstlisting}[caption=Funkcija udaljenosti koja opisuje sferu, label=alg:sdf2]
+\begin{code}{Funkcija udaljenosti koja opisuje sferu}{alg:sdf}
 float SDF(vec3 p) {
-	float radius = uniforms.custom_b;
-	return length(p) - radius;
+    float radius = uniforms.custom_b;
+    return length(p) - radius;
 }
-\end{lstlisting}
+\end{code}
 
 \newpage{}
 
@@ -287,7 +254,7 @@ float SDF(vec3 p) {
 
 Sučelje nudi odabir funkcije udaljenosti koja se prikazuje. Prvi odabir je \emph{"Custom"}, što znači da prikazuje funkciju koja se nalazi u polju za unos funkcije. A druge opcije su gotove funkcije četiri popularnih fraktala: \emph{mandelbox} \cite{mandelbox} (slika \ref{slk:mandelbox}), \emph{mandelbulb} \cite{mandelbulb} (slika \ref{slk:mandelbulb}), Kochova krivulja \cite{kochcurve} (slika \ref{slk:kochcurve}) i \emph{juliabulb} \cite{juliabulb} (slika \ref{slk:juliabulb}). Funkcije tih fraktala su pronađene na Internetu, te se njihovi linkovi nalaze u literaturi.
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
     \centering
     \begin{tabular}{cc}
         \begin{minipage}{0.30\textwidth}
@@ -319,7 +286,7 @@ Sučelje nudi odabir funkcije udaljenosti koja se prikazuje. Prvi odabir je \emp
 
 Za svakog od fraktala je moguće mijenjati nekoliko njegovih parametra. Slika \ref{slk:mandelbox_test} je primjer fraktala \emph{mandelbox} s različitim vrijednostima parametra. Interesantno je vidjeti koliko se oblik izmijeni promjenom par brojeva.
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
     \centering
     \begin{tabular}{ccc}
         \begin{minipage}{0.25\textwidth}
@@ -348,7 +315,7 @@ Za svakog od fraktala je moguće mijenjati nekoliko njegovih parametra. Slika \r
 
 Prikaz tijela se ostvaruje u dva koraka: određivanje točke na površini tijela algoritmom praćenja sfere i pretvaranje informacija o toj točki u boju na ekranu. Algoritam praćenja sfere je ostvaren prema pseudokodu prikazanom na slici \ref{alg:spheretracing}, a programski kod rješenja je naveden u algoritmu na slici \ref{alg:spheretracing2}. Za algoritam se koriste dvije strukture: \emph{Ray} i \emph{Data}. Struktura \emph{Ray} opisuje zraku i koristi se kao ulaz u algoritam, a struktura \emph{Data} služi za čuvanje podataka koje algoritam izračuna u jednom paketu. Pretvaranje podataka u boju je izveden na četiri načina i oni su u programu nazvani "načini prikaza".
 
-\begin{lstlisting}[caption=Isječak programskog koda za praćenje sfere, label=alg:spheretracing2]
+\begin{code}{Isječak programskog koda za praćenje sfere}{alg:spheretracing2}
 // struktura za opis zrake    
 struct Ray {
     vec3 origin; // ishodiste zrake
@@ -380,12 +347,11 @@ Data rayMarch(Ray ray) {
         data.position += d * ray.direction;
     }
 
-    // funkcija deriveNormal() je opisana u poglavlju "Normale"
     data.normal = deriveNormal(data.position, uniforms.normals_precision);
     data.dist = length(data.position - ray.origin); 
     return data;
 }
-\end{lstlisting}
+\end{code}
 
 \newpage{}
 
@@ -393,7 +359,7 @@ Data rayMarch(Ray ray) {
 
 Prvi način prikaza objekta je temeljen na broju koraka kojih zraka obavi prije nego dotakne površinu. Broj koraka se preslikava na sljedeći način: ako je broj koraka nula, boja piksela je bijela, a ako je broj koraka došao do maksimuma, onda je boja crna. Sve između je linearno interpolirano prema algoritmu prikazanom na slici \ref{alg:marches}. Ovaj način prikaza iskorištava svojstvo algoritma da zrake koje prolaze blizu tijela izvedu više koraka. Usporedba zrake koja prolazi blizu tijela u odnosu na zraku koja prolazi dalje od tijela je prikazana na slikama \ref{slk:ao1} i \ref{slk:ao2}. Konačna slika ostvarena ovim načinom prikaza (\ref{slk:marches}) istovremeno prikazuje dojam dubine i označava mjesta gdje ima najviše detalja.
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
     \centering
     \begin{tabular}{cc}
         \begin{minipage}{0.38\textwidth}
@@ -418,7 +384,7 @@ Prvi način prikaza objekta je temeljen na broju koraka kojih zraka obavi prije 
     \label{slk:marches}
 \end{figure}
 
-\begin{lstlisting}[caption=Isječak programskog koda za način prikaza brojem koraka zrake, label=alg:marches]
+\begin{code}{Isječak programskog koda za način prikaza brojem koraka zrake}{alg:marches}
 void main() {
     ...
     Data data = rayMarch(camera_ray);
@@ -426,7 +392,7 @@ void main() {
     pixel_color = vec3(mix(0.0, factor, float(data.collided)));
     ...
 }
-\end{lstlisting}
+\end{code}
 
 \newpage{}
 
@@ -441,14 +407,14 @@ Drugi način prikaza služi za prikaz vrijednosti normale (slika \ref{slk:normal
     \label{slk:normals}
 \end{figure}
 
-Za aproksimaciju derivacije funkcije koristi se metoda središnjih razlika (\emph{engl. central difference method}) navedena u izrazu \ref{eq:cdm}). Funkcija se mora evaluirati dva puta za svaku os (šest puta za tri osi) i kao parametar se koristi proizvoljan vrlo mali broj $dx$. Izračuna normale u točki je naveden u algoritmu na slici \ref{alg:normals} .
+Za aproksimaciju derivacije funkcije koristi se metoda središnjih razlika (\emph{engl. central difference method}) navedena u izrazu \ref{eq:cdm}). Funkcija se mora evaluirati dva puta za svaku os (šest puta za tri osi) i kao parametar se koristi proizvoljan vrlo mali broj $dx$. Izračuna normale u točki je naveden u algoritmu na slici \ref{alg:normals}.
 
 \begin{equation}
 	\label{eq:cdm}
 	f'(x) \approx \frac{f(x+\Delta x)-f(x-\Delta x)}{2 \Delta x}
 \end{equation}
 
-\begin{lstlisting}[caption=Isječak programskog koda za način prikaza normala, label=alg:normals]
+\begin{code}{Isječak programskog koda za način prikaza normala}{alg:normals}
 // varijabla "epsilon" je ekvivalentna "dx" iz gornje formule
 vec3 deriveNormal(vec3 position, float epsilon) {
     vec3 normal;
@@ -471,7 +437,7 @@ void main() {
         pixel_color = vec3(0.0);
     ...
 }
-\end{lstlisting}
+\end{code}
 
 \newpage{}
 
@@ -486,33 +452,38 @@ Treći način prikaza je lokalno osvjetljenje ostvareno s Phongovim modelom (sli
     \label{slk:phong}
 \end{figure}
 
-\begin{lstlisting}[caption=Isječak koda za implementaciju lokalnog osvjetljenja i sjena, label=alg:phong]
+\begin{code}{Isječak koda za implementaciju lokalng osvjetljenja i sjena}{alg:phong}
 void main() {
     ...
     Data camera_data = rayMarch(camera_ray);
 
     // izracun komponenta osvjetljenja
-    float diffuse = clamp(dot(camera_data.normal, uniforms.sun_direction), 0.0, 1.0);
-    float specular = clamp(pow(dot(camera_data.normal, uniforms.sun_direction), 50.0), 0.0, 1.0);
+    float diffuse = clamp(dot(camera_data.normal, uniforms.sun_direction), 
+        0.0, 1.0);
+    float specular = clamp(pow(dot(camera_data.normal
+        , uniforms.sun_direction), 50.0), 0.0, 1.0);
     vec3 ambient = skyValue(vec3(0.0, 0.0, -1.0)) * 0.5;
     float ao = 1.0 - (float(camera_data.marches) / uniforms.max_marches);
-    vec3 intensity = skyValue(uniforms.sun_direction) / uniforms.sun_intensity * 2.0;
+    vec3 intensity = skyValue(uniforms.sun_direction) 
+        / uniforms.sun_intensity * 2.0;
 
     // slanje zrake i izracun sijene
     Ray shadow_ray;
     shadow_ray.direction = uniforms.sun_direction;
-    shadow_ray.origin = camera_data.position + camera_data.normal * uniforms.epsilon;
+    shadow_ray.origin = camera_data.position + camera_data.normal 
+        * uniforms.epsilon;
     Data shadow_data = rayMarch(shadow_ray);
     float shadow = float(shadow_data.dist > 100.0);
 
     // spajanje komponenata u boju
     if (camera_data.collided)
-        pixel_color = vec3((1.0 + specular) * diffuse * shadow * intensity + ambient) * ao;
+        pixel_color = vec3((1.0 + specular) * diffuse * shadow 
+            * intensity + ambient) * ao;
     else
         pixel_color = vec3(0.0);
     ...
 }
-\end{lstlisting}
+\end{code}
 
 \newpage{}
 
@@ -527,10 +498,11 @@ Zadnji, četvrti način prikaza je globalno osvjetljenje (slika \ref{slk:pathtra
     \label{slk:pathtraced}
 \end{figure}
 
-\begin{lstlisting}[caption=Isječak koda za implementaciju globalnog osvjetljenja, label=alg:pathtraced]
+\begin{code}{Isječak koda za implementaciju globalnog osvjetljenja}{alg:pathtraced}
 vec3 pathTrace(Ray camera_ray, inout uint seed) {
     Ray ray = camera_ray;
-    for (int bounce_counter = 0; bounce_counter < int(uniforms.max_bounces); bounce_counter++) {
+    for (int bounce_counter = 0; bounce_counter < int(uniforms.max_bounces)
+        ; bounce_counter++) {
         Data data = rayMarch(ray);
         
         if (!data.collided && data.dist > 10.0)
@@ -546,12 +518,12 @@ void main() {
     ...
     pixel_color = pathTrace(camera_ray, seed);
     // izracun prosjeka trenutne boje i boje proslog okvira
-    output_color = vec4(previous_color.xyz * ((uniforms.temporal_counter - 1.0) / uniforms.temporal_counter) + pixel_color * (1.0 / uniforms.temporal_counter), 1.0);
+    output_color = vec4(previous_color.xyz 
+        * ((uniforms.temporal_counter - 1.0) / uniforms.temporal_counter) 
+        + pixel_color * (1.0 / uniforms.temporal_counter), 1.0);
     ...
 }
-\end{lstlisting}
-
-\newpage{}
+\end{code}
 
 \section{Web stranica i izvorni tekst programa}
 \label{podpog:web_stranica_i_izvorni_kod}
@@ -571,35 +543,34 @@ Aplikacija se izvodi na web pregledniku i kompatibilna je s mobilnim uređajima.
 
 Ispitivanje je provedeno na tri uređaja. Tablica \ref{tab:fps_device} prikazuje specifikacije uređaja. Postoje slučajevi kada brzina iscrtavanja prestaje rasti i ostane konstantna. To je zato što internetski preglednik automatski ograniči brzinu iscrtavanja na brzinu osvježavanja ekrana. U svakom testu koriste se sve zadane postavke i vrijednosti varijabli, osim varijable koja se u testu mijenja i odabrana funkcija udaljenosti (u svakom testu je odabran fraktal \emph{mandelbox}). Za ispitivanje su odabrane varijable za koje se očekuje da imaju značajan utjecaj na performanse, a to su djelitelj rezolucije, maksimalan broj koraka zrake i način prikaza. S obzirom na to da je složenost programa najveća unutar sjenčara, očekivano je da će performanse najviše ovisiti o grafičkom procesoru uređaja.
 
-\begin{figure}[htb]
+\begin{table}[htb]
 	\centering
-	\caption{Specifikacije uređaja za testiranje}
-	\label{tab:fps_device}
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
-		Uređaj & Naziv & Procesor & Grafički procesor & Maksimalna brzina \\
-		 & & (CPU) & (GPU/iGPU) & iscrtavanja (FPS) \\
+		Uređaj & Naziv & Procesor & Grafički procesor & Maksimalna \\
+		 & & (CPU) & (GPU/iGPU) & brzina \\
+        & & & & iscrtavanja (FPS)\\
 		\hline
 		1 & Desktop PC & i5-14400F  & RTX 4060Ti & 144 Hz \\
         & & @ 2.50GHz & & \\
 		\hline
-        2 & HP ProBook 650 G5 & i5-8265U  & UHD Graphics 620 & 60 Hz\\
-        & & @ 1.60GHz & & \\
+        2 & HP ProBook & i5-8265U  & UHD Graphics & 60 Hz\\
+        &  650 G5 & @ 1.60GHz &  620 & \\
 		\hline
         3 & Redmi Note 9 & Octa-core Max  & Mali-G52 MC2 & 60 Hz\\
         & & @ 2.00GHz & & \\
 		\hline
 	\end{tabular}
-\end{figure}
+	\caption{Specifikacije uređaja za testiranje}
+	\label{tab:fps_device}
+\end{table}
 
 Prvo mjerenje uključuje podešavanje veličine rezolucije iscrtavanja (tablica \ref{tab:fps_resolution}). U ovom slučaju rezolucija ne znači veličinu ekrana, nego se odnosi specifično na vrijednosti prozora za prikaz (\emph{engl. viewport}) \emph{WebGL2} programa za prvi poziv na iscrtavanje. Iz rezultata se vidi da rezolucija ima veliki utjecaj na brzinu iscrtavanja. To je zato što se algoritam nalazi u sjenčaru fragmenta koji se izvodi za svaki piksel slike.
 
 \newpage{}
 
-\begin{figure}[htb]
+\begin{table}[htb]
 	\centering
-	\caption{Brzina iscrtavanja u ovisnosti o rezoluciji}
-	\label{tab:fps_resolution}
 	\begin{tabular}{|c|c|c|c|}
 		\hline
 		Uređaj & Djeljitelj & Rezolucija & Brzina scrtavanja \\
@@ -618,14 +589,14 @@ Prvo mjerenje uključuje podešavanje veličine rezolucije iscrtavanja (tablica 
 		3 & 3 & 121 x 99 & 60 Hz \\
 		\hline
 	\end{tabular}
-\end{figure}
+	\caption{Brzina iscrtavanja u ovisnosti o rezoluciji}
+	\label{tab:fps_resolution}
+\end{table}
 
 Drugo mjerenje odnosi se na parametar u algoritmu praćenja sfere (tablica \ref{tab:fps_maxmarches}). Mijenja se maksimalan broj koraka kojih zraka može obaviti prije nego algoritam zaključi da zraka nije naišla na prepreku. Povećavanjem vrijednosti varijable se smanjuje brzina iscrtavanja do neke razine, a zatim varijabla prestaje negativno utjecati na brzinu. To je zato što sve zrake imaju dovoljno koraka na raspolaganju da stignu do površine tijela i ostatak koraka ne koriste. To se događa zato što je kamera bila okrenuta prema tijelu. Ako bi kamera gledala od tijela, zrake bi išle u beskonačnost, odnosno uvijek bi iskoristile sve dostupne korake i varijabla bi u višim vrijednostima nastavila negativno utjecati na brzinu.
 
-\begin{figure}[htb]
+\begin{table}[htb]
 	\centering
-	\caption{Brzina iscrtavanja u ovisnosti o maksimalnom broju koraka zrake}
-	\label{tab:fps_maxmarches}
 	\begin{tabular}{|c|c|c|}
 		\hline
 		Uređaj & Maksimalan & Brzina iscrtavanja \\
@@ -647,14 +618,14 @@ Drugo mjerenje odnosi se na parametar u algoritmu praćenja sfere (tablica \ref{
 		3 & 400 & 41 Hz \\
 		\hline
 	\end{tabular}
-\end{figure}
+	\caption{Brzina iscrtavanja u ovisnosti o maksimalnom broju koraka zrake}
+	\label{tab:fps_maxmarches}
+\end{table}
 
 Treće mjerenje se odnosi na ispitivanje načina prikaza. Rezultati su bili predvidivi, tj. složeniji načini su naravno sporiji. Jedino se ističe mala je razlika u brzini između lokalnog i globalnog osvjetljenja. No, to je zato što način globalnog osvjetljenja koristi prosjek do tada iscrtanih okvira pa se jedan okvir ne može klasificirati kao gotova slika. 
 
-\begin{figure}[htb]
+\begin{table}[htb]
 	\centering
-	\caption{Brzina iscrtavanja u ovisnosti o načinu iscrtavanja}
-	\label{tab:fps_view}
 	\begin{tabular}{|c|c|c|}
 		\hline
 		Uređaj & Način prikaza & Brzina scrtavanja \\
@@ -676,7 +647,9 @@ Treće mjerenje se odnosi na ispitivanje načina prikaza. Rezultati su bili pred
 		3 & Globalno osvjetljenje & 22 Hz \\
 		\hline
 	\end{tabular}
-\end{figure}
+	\caption{Brzina iscrtavanja u ovisnosti o načinu iscrtavanja}
+	\label{tab:fps_view}
+\end{table}
 
 \section{Slike rezultata}
 
