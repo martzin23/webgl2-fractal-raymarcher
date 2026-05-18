@@ -5,3 +5,5 @@
 *.gz
 *.toc
 *.blg
+*.xmpi
+*.xmpdata

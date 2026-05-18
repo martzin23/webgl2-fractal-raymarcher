@@ -544,6 +544,8 @@ Ispitivanje je provedeno na tri uređaja. Tablica \ref{tab:fps_device} prikazuje
 
 \begin{table}[htb]
 	\centering
+	\caption{Specifikacije uređaja za testiranje}
+	\label{tab:fps_device}
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
 		Uređaj & Naziv & Procesor & Grafički procesor & Maksimalna \\
@@ -560,8 +562,6 @@ Ispitivanje je provedeno na tri uređaja. Tablica \ref{tab:fps_device} prikazuje
         & & @ 2.00GHz & & \\
 		\hline
 	\end{tabular}
-	\caption{Specifikacije uređaja za testiranje}
-	\label{tab:fps_device}
 \end{table}
 
 Prvo mjerenje uključuje podešavanje veličine rezolucije iscrtavanja (tablica \ref{tab:fps_resolution}). U ovom slučaju rezolucija ne znači veličinu ekrana, nego se odnosi specifično na vrijednosti prozora za prikaz (\emph{engl. viewport}) \emph{WebGL2} programa za prvi poziv na iscrtavanje. Iz rezultata se vidi da rezolucija ima veliki utjecaj na brzinu iscrtavanja. To je zato što se algoritam nalazi u sjenčaru fragmenata koji se izvodi za svaki piksel slike.
@@ -570,6 +570,8 @@ Prvo mjerenje uključuje podešavanje veličine rezolucije iscrtavanja (tablica 
 
 \begin{table}[htb]
 	\centering
+	\caption{Brzina iscrtavanja u ovisnosti o rezoluciji}
+	\label{tab:fps_resolution}
 	\begin{tabular}{|c|c|c|c|}
 		\hline
 		Uređaj & Djeljitelj & Rezolucija & Brzina scrtavanja \\
@@ -588,14 +590,14 @@ Prvo mjerenje uključuje podešavanje veličine rezolucije iscrtavanja (tablica 
 		3 & 3 & 121 x 99 & 60 Hz \\
 		\hline
 	\end{tabular}
-	\caption{Brzina iscrtavanja u ovisnosti o rezoluciji}
-	\label{tab:fps_resolution}
 \end{table}
 
 Drugo mjerenje odnosi se na parametar u algoritmu praćenja sfere (tablica \ref{tab:fps_maxmarches}). Mijenja se maksimalan broj koraka kojih zraka može obaviti prije nego algoritam zaključi da zraka nije naišla na prepreku. Povećavanjem vrijednosti varijable se smanjuje brzina iscrtavanja do neke razine, a zatim varijabla prestaje negativno utjecati na brzinu. To je zato što sve zrake imaju dovoljno koraka na raspolaganju da stignu do površine tijela i ostatak koraka ne koriste. To se događa zato što je kamera bila okrenuta prema tijelu. Ako bi kamera gledala od tijela, zrake bi išle u beskonačnost, odnosno uvijek bi iskoristile sve dostupne korake i varijabla bi u višim vrijednostima nastavila negativno utjecati na brzinu.
 
 \begin{table}[htb]
 	\centering
+	\caption{Brzina iscrtavanja u ovisnosti o maksimalnom broju koraka zrake}
+	\label{tab:fps_maxmarches}
 	\begin{tabular}{|c|c|c|}
 		\hline
 		Uređaj & Maksimalan & Brzina iscrtavanja \\
@@ -617,14 +619,14 @@ Drugo mjerenje odnosi se na parametar u algoritmu praćenja sfere (tablica \ref{
 		3 & 400 & 41 Hz \\
 		\hline
 	\end{tabular}
-	\caption{Brzina iscrtavanja u ovisnosti o maksimalnom broju koraka zrake}
-	\label{tab:fps_maxmarches}
 \end{table}
 
 Treće mjerenje se odnosi na ispitivanje načina prikaza. Rezultati su bili predvidivi, tj. složeniji načini su naravno sporiji. Jedino se ističe mala je razlika u brzini između lokalnog i globalnog osvjetljenja. No, to je zato što način globalnog osvjetljenja koristi prosjek do tada iscrtanih okvira pa se jedan okvir ne može klasificirati kao gotova slika. 
 
 \begin{table}[htb]
 	\centering
+	\caption{Brzina iscrtavanja u ovisnosti o načinu iscrtavanja}
+	\label{tab:fps_view}
 	\begin{tabular}{|c|c|c|}
 		\hline
 		Uređaj & Način prikaza & Brzina scrtavanja \\
@@ -646,8 +648,6 @@ Treće mjerenje se odnosi na ispitivanje načina prikaza. Rezultati su bili pred
 		3 & Globalno osvjetljenje & 22 Hz \\
 		\hline
 	\end{tabular}
-	\caption{Brzina iscrtavanja u ovisnosti o načinu iscrtavanja}
-	\label{tab:fps_view}
 \end{table}
 
 \section{Slike rezultata}
