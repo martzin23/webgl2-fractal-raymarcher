@@ -46,9 +46,9 @@ export default class Camera {
             if (!this.lock_mode) return;
             if (document.pointerLockElement === null)
                 try {
-                    canvas.requestPointerLock({ unadjustedMovement: true }).catch(() => {});
+                    canvas.requestPointerLock({ unadjustedMovement: true });
                 } catch (error) {
-                    document.exitPointerLock();
+                    try {document.exitPointerLock();} catch (error) {}
                     this.lock_mode = false;
                     this.enabled = true;
                 }
