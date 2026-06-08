@@ -29,6 +29,7 @@ export default class Camera {
         this.orbit_anchor = orbit_anchor;
         this.enabled = false;
         this.#key_states = {};
+        this.lock_mode = true;
         if (this.orbit_mode) this.updateOrbit();
 
         document.addEventListener('keydown', (event) => {
@@ -42,8 +43,15 @@ export default class Camera {
         });
 
         canvas.addEventListener('click', () => {
+            if (!this.lock_mode) return;
             if (document.pointerLockElement === null)
-                canvas.requestPointerLock({ unadjustedMovement: true }).catch(() => {});
+                try {
+                    canvas.requestPointerLock({ unadjustedMovement: true }).catch(() => {});
+                } catch (error) {
+                    document.exitPointerLock();
+                    this.lock_mode = false;
+                    this.enabled = true;
+                }
             else
                 document.exitPointerLock();
         });
@@ -58,6 +66,16 @@ export default class Camera {
                 this.updateOrbit(event.movementX, event.movementY);
             else
                 this.updateRotation(-event.movementX, -event.movementY);
+        });
+
+        canvas.addEventListener("mousedown", (event) => {
+            if (!this.lock_mode)
+                this.enabled = true;
+        });
+        
+        document.addEventListener("mouseup", (event) => {
+            if (!this.lock_mode)
+                this.enabled = false;
         });
 
         TouchListener.addTouchListener(canvas, (event) => {
@@ -85,7 +103,6 @@ export default class Camera {
             }
 
         });
-
         
         document.addEventListener('wheel', (event) => {
             if(this.enabled)
