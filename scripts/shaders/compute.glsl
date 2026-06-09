@@ -74,24 +74,21 @@ void main() {
     camera_ray.direction = normalize(camera_ray.direction + randomDirection(seed) * uniforms.antialiasing_strength * uniforms.fov * uniforms.render_scale);
     focusBlur(camera_ray, seed, uniforms.focus_distance, uniforms.focus_strength);
 
-    vec4 previous_color = texelFetch(color_buffer, ivec2(gl_FragCoord.xy), 0);
     vec3 pixel_color = vec3(0.0);
     if (uniforms.shader_mode == 1.0) {
         Data data = rayMarch(camera_ray);
         float factor = 1.0 - (float(data.marches) / uniforms.max_marches);
-        if (data.collided) {
+        if (data.collided)
             pixel_color = vec3((data.normal * 0.5 + 0.5) * factor);
-        } else {
+        else
             pixel_color = vec3(0.0);
-        }
-        output_color = vec4(previous_color.xyz * ((uniforms.temporal_counter - 1.0) / uniforms.temporal_counter) + pixel_color * (1.0 / uniforms.temporal_counter), 1.0);
     } else if (uniforms.shader_mode == 2.0) {
         Data camera_data = rayMarch(camera_ray);
         float diffuse = clamp(dot(camera_data.normal, uniforms.sun_direction), 0.0, 1.0);
         float specular = clamp(pow(dot(camera_data.normal, uniforms.sun_direction), 50.0), 0.0, 1.0);
         vec3 ambient = skyValue(vec3(0.0, 0.0, -1.0)) * 0.5;
         float ao = 1.0 - (float(camera_data.marches) / uniforms.max_marches);
-        vec3 intensity = skyValue(uniforms.sun_direction) / uniforms.sun_intensity * 2.0;
+        vec3 intensity = skyValue(uniforms.sun_direction) / (uniforms.sun_intensity + 1.0) * 2.0;
 
         Ray shadow_ray;
         shadow_ray.direction = uniforms.sun_direction;
@@ -100,21 +97,23 @@ void main() {
         Data shadow_data = rayMarch(shadow_ray);
         float shadow = float(shadow_data.dist > 100.0);
 
-        if (camera_data.collided) {
+        if (camera_data.collided)
             pixel_color = vec3((1.0 + specular) * diffuse * shadow * intensity + ambient) * ao;
-        } else {
+        else
             pixel_color = skyValue(camera_ray.direction);
-        }
-        output_color = vec4(previous_color.xyz * ((uniforms.temporal_counter - 1.0) / uniforms.temporal_counter) + pixel_color * (1.0 / uniforms.temporal_counter), 1.0);
     } else if (uniforms.shader_mode == 3.0) {
         pixel_color = pathTrace(camera_ray, seed);
-        output_color = vec4(previous_color.xyz * ((uniforms.temporal_counter - 1.0) / uniforms.temporal_counter) + pixel_color * (1.0 / uniforms.temporal_counter), 1.0);
     } else {
         Data data = rayMarch(camera_ray);
         float factor = 1.0 - (float(data.marches) / uniforms.max_marches);
         pixel_color = vec3(mix(0.0, factor, float(data.collided)));
-        output_color = vec4(previous_color.xyz * ((uniforms.temporal_counter - 1.0) / uniforms.temporal_counter) + pixel_color * (1.0 / uniforms.temporal_counter), 1.0);
     }
+    
+    vec4 previous_color = texelFetch(color_buffer, ivec2(gl_FragCoord.xy), 0);
+    if (int(uniforms.temporal_counter) == 1)
+        output_color = vec4(pixel_color, 1.0);
+    else
+        output_color = vec4(previous_color.xyz * ((uniforms.temporal_counter - 1.0) / uniforms.temporal_counter) + pixel_color * (1.0 / uniforms.temporal_counter), 1.0);
 }
 
 vec3 pathTrace(Ray camera_ray, inout uint seed) {

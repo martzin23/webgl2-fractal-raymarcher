@@ -369,8 +369,8 @@ export default class GUIManager {
         addComment(document.getElementById("group-sun"), "(Only works for some shading modes)");
         addDrag(document.getElementById("group-sun"), (value) => {gpu.sun_rotation.x = value;}, () => gpu.sun_rotation.x, "Sun horizontal rotation", -Infinity, Infinity, 0.1).addTooltip("The horizontal angle of the sun");
         addDrag(document.getElementById("group-sun"), (value) => {gpu.sun_rotation.y = value;}, () => gpu.sun_rotation.y, "Sun vertical rotation", -90, 90, 0.1).addTooltip("How high the sun is in the sky");
-        addDrag(document.getElementById("group-sun"), (value) => {gpu.uniforms.sun_intensity = value;}, () => gpu.uniforms.sun_intensity, "Sun intensity", 0, Infinity, 0.1).addTooltip("Light intensity of the sun, increases noisyness of the image");
-        addDrag(document.getElementById("group-sun"), (value) => {gpu.uniforms.sky_intensity = value;}, () => gpu.uniforms.sky_intensity, "Sky intensity", 0, Infinity, 0.01).addTooltip("Light intensity of the sky");
+        addDrag(document.getElementById("group-sun"), (value) => {gpu.uniforms.sun_intensity = value;}, () => gpu.uniforms.sun_intensity, "Sun intensity", 0, Infinity, 1.0).addTooltip("Light intensity of the sun, increases noisyness of the image");
+        addDrag(document.getElementById("group-sun"), (value) => {gpu.uniforms.sky_intensity = value;}, () => gpu.uniforms.sky_intensity, "Sky intensity", 0, Infinity, 0.02).addTooltip("Light intensity of the sky");
 
         addButton(document.getElementById("group-code"), async () => {
             const switch_element = document.querySelector("#group-sdf .switch");
